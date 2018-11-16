@@ -666,6 +666,7 @@ MovAny = {
 		{"PlayerDebuffsMover", "Player Debuffs"},
 		{"RuneFrame", "Deathknight Runes"},
 		{"TotemFrame", "Shaman Totem Timers"},
+		{"RatedBattlegroundRankFrame", "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|tPlayer Rank"},
 
 		{"", "Target"},
 		{"TargetFrame", "Target"},
@@ -675,6 +676,7 @@ MovAny = {
 		{"TargetFrameSpellBar", "Target Casting Bar"},
 		{"TargetFrameToT", "Target of Target"},
 		{"TargetFrameToTDebuffsMover", "Target of Target Debuffs"},
+		{"RatedBattlegroundRankTargetFrame", "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|tPlayer Rank"},
 
 		{"", "Vehicle"},
 		{"VehicleMenuBar", "Vehicle Bar"},
