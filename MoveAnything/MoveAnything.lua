@@ -5555,7 +5555,6 @@ function MovAny:Search(searchWord)
 	if searchWord ~= MOVANY.SEARCH_TEXT then
 		searchWord = string.gsub(string.gsub(string.lower(searchWord), "([%(%)%%%.%[%]%+%-%?])", "%%%1"), "%*", "[%%w %%c]*")
 		if self.searchWord ~= searchWord then
-			-- searchWord ~= MOVANY.SEARCH_TEXT
 			self.searchWord = searchWord
 			self:UpdateGUIIfShown(true)
 		end
