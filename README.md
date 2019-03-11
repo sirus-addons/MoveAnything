@@ -1,7 +1,5 @@
-# MoveAnything
+**MoveAnything** позволяет перемещать, масштабировать, скрывать и настраивать прозрачность практически любого элемента экрана в WoW, предлагая инструменты, которые помогут вам настроить пользовательский интерфейс. Некоторые другие модификации кадров также возможны с использованием редакторов кадров MA (представленных в 11.b2), включая framestrata, группирование кадров и многое другое.
 
-**MoveAnything**  enables you to move, scale, hide and adjust transparency of just about any screen element in WoW, offering tools to help you customize your UI. Some other frame modifications are also possible using MA's Frame Editors (Introduced in 11.b2), including framestrata, frame grouping and more.
+Введите /move, чтобы отобразить главное окно, или нажмите кнопку под меню игры. Это главное окно содержит список фреймов Blizzard (любой элемент, отсутствующий в списке, может быть добавлен в категорию пользовательских фреймов с помощью /move frameName, /mafe frameName, /hide frameName или одного из сочетаний клавиш move / mafe / hide).
 
-Type  **/move**  to show the main window or click the button below the game menu. This main window contains a list of Blizzard's frames (any element not in the list can be added to the Custom Frames category by either /move frameName, /mafe frameName, /hide frameName or one of the move/mafe/hide keybindings).
-
-Currently maintained by Resike. Many thanks to Alea of Гордунни EU who maintained it since the launch of MoP. Special thanks to Wagthaa of Earthen Ring EU who was the developer since the pre-WotLK patch. Kudos to Skrag (Original author), Jason (Vanilla) & Vincent (TBC) for earlier versions.
+*Спасибо игроку [Os](https://forum.sirus.su/members/17os86.175882/) за перевод описания на Русский Язык.*
