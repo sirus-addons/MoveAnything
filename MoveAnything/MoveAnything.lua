@@ -487,13 +487,16 @@ MovAny = {
 		{"BankBagFrame5", "Bank Bag 5"},
 		{"BankBagFrame6", "Bank Bag 6"},
 		{"BankBagFrame7", "Bank Bag 7"},
-		
+
 		{"", "Battlegrounds & PvP"},
 		{"PVPParentFrame", "PVP Window"},
 		{"BattlefieldMinimap", "Battlefield Minimap"},
 		{"BattlefieldFrame", "Battleground Queue"},
 		{"WorldStateScoreFrame", "Battleground Score"},
 		{"WorldStateCaptureBar1", "Flag Capture Timer Bar"},
+		{"WorldStateTopCenterFrame", "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|tBattleground info frame"},
+		{"WorldStateTopCenterFrameLeftBar", "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|tBattleground info Alliance progress bar"},
+		{"WorldStateTopCenterFrameRightBar", "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|tBattleground info Horde progress bar"},
 
 		{"", "Bottom Bar"},
 		{"MainMenuBar", "Main Bar"},
@@ -598,7 +601,7 @@ MovAny = {
 		{"MinimapZoomIn", "Zoom In Button"},
 		{"MinimapZoomOut", "Zoom Out Button"},
 		{"MiniMapWorldMapButton", "World Map Button"},
-		
+
 		{"", "Miscellaneous"},
 		{"TimeManagerFrame", "Alarm Clock"},
 		{"AuctionFrame", "Auction House"},
@@ -731,7 +734,7 @@ MovAny = {
 			MAOptions:Hide()
 		end
 	end,
-	
+
 	hCreateFrame = function(frameType, name, parent, inherit)
 		if name and MovAny:IsModified(name) then
 			if MovAny:HookFrame(name) then
@@ -763,7 +766,7 @@ MovAny = {
 			MovAny.lDelayedSync["PlayerTalentFrame"] = nil
 		end
 	end,
-	
+
 	hReputationWatchBar_Update = function()
 		if MovAny:IsModified("ReputationWatchBar") then
 			MovAny:SyncFrame("ReputationWatchBar")
@@ -844,9 +847,9 @@ function MovAny:Boot()
 	if self.inited then
 		return
 	end
-	
+
 	MAOptions = _G["MAOptions"]
-	
+
 	if not MADB.noMMMW and Minimap:GetScript("OnMouseWheel") == nil then
 		Minimap:SetScript("OnMouseWheel", function(self, dir)
 			if dir < 0 then
@@ -857,7 +860,7 @@ function MovAny:Boot()
 		end)
 		Minimap:EnableMouseWheel(true)
 	end
-	
+
 	local autoShowUI = nil
 	if MoveAnything_CharacterSettings == nil then
 		autoShowUI = true
@@ -878,20 +881,20 @@ function MovAny:Boot()
 			MADB[i] = v
 		end
 	end
-	
+
 	MADB.collapsed = true
-	
+
 	if MADB.squareMM then
 		Minimap:SetMaskTexture("Interface\\AddOns\\MoveAnything\\MinimapMaskSquare")
 	end
-	
+
 	self:SetNumRows(MADB.frameListRows, false)
-	
+
 	MAOptionsMoveHeader:SetText(MOVANY.LIST_HEADING_MOVER)
 	MAOptionsHideHeader:SetText(MOVANY.LIST_HEADING_HIDE)
-	
+
 	MAOptionsToggleFrameEditors:SetChecked(true)
-	
+
 	self:ParseData()
 
 	-- hooks
@@ -919,7 +922,7 @@ function MovAny:Boot()
 	if updateContainerFrameAnchors then
 		hooksecurefunc("updateContainerFrameAnchors", self.hUpdateContainerFrameAnchors)
 	end
-	
+
 	if ExtendedUI and ExtendedUI.CAPTUREPOINT then
 		self.oCaptureBar_Create = ExtendedUI.CAPTUREPOINT.create
 		ExtendedUI.CAPTUREPOINT.create = self.CaptureBar_Create
@@ -949,7 +952,7 @@ function MovAny:OnPlayerLogout()
 	if MAOptions:IsShown() then
 		MADB.autoShowNext = true
 	end
-	
+
 	if type(MoveAnything_CustomFrames) == "table" then
 		for i, v in pairs(MoveAnything_CustomFrames) do
 			v.idx = nil
@@ -982,7 +985,7 @@ function MovAny:VerifyData()
 	if MoveAnything_CharacterSettings[self:GetProfileName()] == nil then
 		MoveAnything_CharacterSettings[self:GetProfileName()] = {}
 	end
-	
+
 	local fRel
 	local remList = {}
 	for pi, profile in pairs(MoveAnything_CharacterSettings) do
@@ -994,32 +997,32 @@ function MovAny:VerifyData()
 				break
 			end
 			opt.cat = nil
-			
+
 			opt.originalLeft = nil
 			opt.originalBottom = nil
-				
+
 			opt.originalWidth = nil
 			opt.originalHeight = nil
-			
+
 			opt.orgPos = nil
-			
+
 			opt.originalScale = nil
-			
+
 			opt.MANAGED_FRAME = nil
 			opt.UIPanelWindows = nil
-			
+
 			if opt.scale and opt.scale > 0.991 and opt.scale < 1.009 then
 				opt.scale = 1
 			end
-			
+
 			if opt.x ~= nil and opt.y ~= nil then
 				f = _G[fn]
-				
+
 				fRel = self:ForcedDetachFromParent(fn, opt)
 				if not fRel then
 					p = f and f.GetParent and f:GetParent() ~= nil and f:GetParent():GetName() or "UIParent"
 				end
-				
+
 				opt.pos = {"BOTTOMLEFT", p, "BOTTOMLEFT", opt.x, opt.y}
 				opt.x = nil
 				opt.y = nil
@@ -1035,7 +1038,7 @@ function MovAny:VerifyData()
 				opt.height = nil
 			end
 			]]
-			
+
 			if not opt.hidden and opt.pos == nil and opt.scale == nil and opt.width == nil and opt.height == nil and opt.alpha == nil then
 				tinsert(remList, fn)
 			end
@@ -1049,7 +1052,7 @@ end
 
 function MovAny:ParseData()
 	local sepLast = nil, sep
-	
+
 	if MADB.noList then
 		for i, v in pairs(self.DefaultFrameList) do
 			if v[1]  then
@@ -1095,12 +1098,12 @@ function MovAny:ParseData()
 			end
 		end
 	end
-	
+
 	self.DefaultFrameList = nil
 	self.customCat = sepLast
-	
+
 	self.frameOptions = MoveAnything_CharacterSettings[self:GetProfileName()]
-	
+
 	table.sort(self.frameOptions, function(o1,o2)
 		return o1.name:lower() < o2.name:lower()
 	end)
@@ -1202,7 +1205,7 @@ function MovAny:IsValidObject(f, silent)
 		end
 		return
 	end
-	
+
 	local type = f:GetObjectType()
 	if not self.lAllowedTypes[type] then
 		if not silent then
@@ -1210,7 +1213,7 @@ function MovAny:IsValidObject(f, silent)
 		end
 		return
 	end
-	
+
 	if MovAny:IsMAFrame(f:GetName()) then
 		if MovAny.lAllowedMAFrames[f:GetName()] or string.sub(f:GetName(), 1, 5) == "MA_FE" then
 			--dbg("MA Frame: "..f:GetName())
@@ -1245,14 +1248,14 @@ function MovAny:SyncFrames(dontReset)
 	if not self.inited or self.syncingFrames then
 		return
 	end
-	
+
 	local i = 0
 	for k in pairs(self.pendingFrames) do
 		i = i + 1
 		break
 	end
 	--dbg("Syncing "..i.." frames")
-	
+
 	if i == 0 then
 		return
 	end
@@ -1261,7 +1264,7 @@ function MovAny:SyncFrames(dontReset)
 
 	local f, parent, handled
 	local skippedFrames = {}
-	
+
 	if dontReset then
 		for fn, opt in pairs(self.pendingFrames) do
 			f = _G[fn]
@@ -1270,7 +1273,7 @@ function MovAny:SyncFrames(dontReset)
 			end
 		end
 	end
-	
+
 	for fn, opt in pairs(self.pendingFrames) do
 		if not self:GetMoverByFrameName(fn) then
 			handled = nil
@@ -1307,7 +1310,7 @@ function MovAny:SyncFrames(dontReset)
 		end
 	end
 	self.pendingFrames = skippedFrames
-	
+
 	local postponed = {}
 	for k, f in pairs(self.pendingActions) do
 		if f() then
@@ -1315,10 +1318,10 @@ function MovAny:SyncFrames(dontReset)
 		end
 	end
 	self.pendingActions = postponed
-	
+
 	self:SetLeftFrameLocation()
 	self:SetCenterFrameLocation()
-	
+
 	self.rendered = true
 	self.syncingFrames = nil
 end
@@ -1330,13 +1333,13 @@ function MovAny:SyncFrame(fn, opt, dontReset)
 			return
 		end
 	end
-	
+
 	if opt.disabled then
 		return
 	end
-	
+
 	local handled = nil
-	
+
 	if self.lRunOnceBeforeInteract[fn] then
 		self.lRunOnceBeforeInteract[fn]()
 		self.lRunOnceBeforeInteract[fn] = nil
@@ -1420,12 +1423,12 @@ function MovAny:GetFrameOptions(fn, noSymLink, create)
 	if MovAny.frameOptions == nil then
 		return nil
 	end
-	
+
 	if not noSymLink and not MovAny.frameOptions[fn] and MovAny.lTranslateSec[fn] then
 		--dbg(""..fn.." translated to "..self.lTranslateSec[fn])
 		fn = MovAny.lTranslateSec[fn]
 	end
-	
+
 	if create and MovAny.frameOptions[fn] == nil then
 		MovAny.frameOptions[fn] = {name = fn, cat = MovAny.customCat}
 	end
@@ -1488,12 +1491,12 @@ end
 
 function MovAny:LockVisibility(f)
 	f.MAHidden = true
-	
+
 	if not f.MAShowHook then
 		hooksecurefunc(f, "Show", MovAny.hShow)
 		f.MAShowHook = true
 	end
-	
+
 	f.MAWasShown = f:IsShown()
 	if f.MAWasShown then
 		f:Hide()
@@ -1503,7 +1506,7 @@ function MovAny:LockVisibility(f)
 		--f:Hide()
 		return
 	end
-	
+
 	if f.attachedChildren then
 		for i, v in pairs(f.attachedChildren) do
 			self:LockVisibility(v)
@@ -1520,7 +1523,7 @@ function MovAny:UnlockVisibility(f)
 		f:Show()
 		return
 	end
-	
+
 	if f.MAWasShown then
 		f.MAWasShown = nil
 		f:Show()
@@ -1540,7 +1543,7 @@ function MovAny.hSetPoint(f, ...)
 		if string.match(fn, "^ContainerFrame[1-9][0-9]*$") then
 			fn = MovAny:GetBagInContainerFrame(f):GetName()
 		end
-		
+
 		if InCombatLockdown() and MovAny:IsProtected(f) then
 			MovAny.pendingFrames[fn] = MovAny:GetFrameOptions(fn)
 		else
@@ -1598,12 +1601,12 @@ end
 function MovAny.hSetWidth(f, ...)
 	if f.MAScaled then
 		local fn = f:GetName()
-		
+
 		if string.match(fn, "^ContainerFrame[0-9]+$") then
 			local bag = MovAny:GetBagInContainerFrame(f)
 			fn = bag:GetName()
 		end
-		
+
 		MovAny.pendingFrames[fn] = MovAny:GetFrameOptions(fn)
 		if not MovAny:IsProtected(f) or not InCombatLockdown() then
 			MovAny:SyncFrames()
@@ -1614,12 +1617,12 @@ end
 function MovAny.hSetHeight(f, ...)
 	if f.MAScaled then
 		local fn = f:GetName()
-		
+
 		if string.match(fn, "^ContainerFrame[0-9]+$") then
 			local bag = MovAny:GetBagInContainerFrame(f)
 			fn = bag:GetName()
 		end
-		
+
 		MovAny.pendingFrames[fn] = MovAny:GetFrameOptions(fn)
 		if not MovAny:IsProtected(f) or not InCombatLockdown() then
 			MovAny:SyncFrames()
@@ -1630,12 +1633,12 @@ end
 function MovAny.hSetScale(f, ...)
 	if f.MAScaled then
 		local fn = f:GetName()
-		
+
 		if string.match(fn, "^ContainerFrame[0-9]+$") then
 			local bag = MovAny:GetBagInContainerFrame(f)
 			fn = bag:GetName()
 		end
-		
+
 		MovAny.pendingFrames[fn] = MovAny:GetFrameOptions(fn)
 		if not MovAny:IsProtected(f) or not InCombatLockdown() then
 			MovAny:SyncFrames()
@@ -1671,12 +1674,12 @@ function MovAny.hSetScale(f, ...)
 	if f.MAScaled then
 		--dbg(f:GetName()..":SetScale intercepted, locked scale: "..f.MAScaled)
 		local fn = f:GetName()
-		
+
 		if string.match(fn, "^ContainerFrame[1-9][0-9]*$") then
 			local bag = MovAny:GetBagInContainerFrame(f)
 			fn = bag:GetName()
 		end
-		
+
 		if MovAny:IsProtected(f) and InCombatLockdown() then
 			MovAny.pendingFrames[fn] = MovAny:GetFrameOptions(fn)
 			MovAny:SyncFrames()
@@ -1716,44 +1719,44 @@ function MovAny:HookFrame(fn, f, dontUnanchor)
 	if not f then
 		return
 	end
-	
+
 	if not self:IsValidObject(f) then
 		return
 	end
-	
+
 	--dbg("Hooking frame: "..fn)
 	local opt = self:GetFrameOptions(fn, true, true)
 	if opt.name == nil then
 		opt.name = fn
 	end
-	
+
 	if f.OnMAHook and f.OnMAHook(f) ~= nil then
 		return
 	end
-	
+
 	if opt.disabled then
 		opt.disabled = nil
 	end
 	--f.MAOpts = opt
-	
+
 	if not opt.orgPos then
 		MovAny:StoreOrgPoints(f, opt)
 	end
-	
+
 	if not dontUnanchor and not self.NoUnanchorRelatives[fn] then
 		self:UnanchorRelatives(f, opt)
 	end
-	
+
 	if self.DetachFromParent[fn] and not self.NoReparent[fn] and not f.MAOrgParent then
 		f.MAOrgParent = f:GetParent()
 		f:SetParent(_G[ self.DetachFromParent[fn] ])
 		--self:LockParent(f)
 	end
-	
+
 	if f.OnMAPostHook and f.OnMAPostHook(f) ~= nil then
 		return
 	end
-	
+
 	return opt
 end
 
@@ -1819,7 +1822,7 @@ end
 function MovAny:RestoreOrgPoints(f, opt, readOnly)
 	--dbg("Restoring point to "..f:GetName().."")
 	f:ClearAllPoints()
-	
+
 	if opt then -- and not opt.UIPanelWindows
 		if type(opt.orgPos) == "table" then
 			if type(opt.orgPos[1]) == "table" then
@@ -1886,10 +1889,10 @@ function MovAny:GetRelativePoint(o, f, lockRel)
 	if not rel then
 		return
 	end
-	
+
 	local point = o[1]
 	local relPoint = o[3]
-	
+
 	if not lockRel then
 		local newRel = self:ForcedDetachFromParent(f:GetName())
 		if newRel then
@@ -1901,9 +1904,9 @@ function MovAny:GetRelativePoint(o, f, lockRel)
 			return
 		end
 	end
-	
+
 	local rX, rY, pX, pY
-	
+
 	if rel:GetLeft() ~= nil then
 		if relPoint == "TOPRIGHT" then
 			rY = rel:GetTop()
@@ -1935,7 +1938,7 @@ function MovAny:GetRelativePoint(o, f, lockRel)
 		else
 			return
 		end
-		
+
 		if rel.GetEffectiveScale then
 			rY = rY * rel:GetEffectiveScale()
 			rX = rX * rel:GetEffectiveScale()
@@ -1944,7 +1947,7 @@ function MovAny:GetRelativePoint(o, f, lockRel)
 			rX = rX * UIParent:GetEffectiveScale()
 		end
 	end
-	
+
 	if f:GetLeft() ~= nil then
 		if point == "TOPRIGHT" then
 			pY = f:GetTop()
@@ -1976,7 +1979,7 @@ function MovAny:GetRelativePoint(o, f, lockRel)
 		else
 			return
 		end
-		
+
 		if f.GetEffectiveScale then
 			pY = pY * f:GetEffectiveScale()
 			pX = pX * f:GetEffectiveScale()
@@ -1985,11 +1988,11 @@ function MovAny:GetRelativePoint(o, f, lockRel)
 			pX = pX * UIParent:GetEffectiveScale()
 		end
 	end
-	
+
 	if rY ~= nil and rX ~= nil and pY ~= nil and pX ~= nil then
 		rX = pX - rX
 		rY = pY - rY
-		
+
 		if f.GetEffectiveScale then
 			rY = rY / f:GetEffectiveScale()
 			rX = rX / f:GetEffectiveScale()
@@ -2001,7 +2004,7 @@ function MovAny:GetRelativePoint(o, f, lockRel)
 		rX = 0
 		rY = 0
 	end
-	
+
 	return {point, rel:GetName(), relPoint, rX, rY}
 end
 
@@ -2010,7 +2013,7 @@ function MovAny:AddFrameToMovableList( fn, helpfulName, default )
 		if helpfulName == nil then
 			helpfulName = fn
 		end
-		
+
 		local opts = {}
 		opts.name = fn
 		opts.helpfulName = helpfulName
@@ -2042,19 +2045,19 @@ function MovAny:AttachMover(fn, helpfulName)
 		string.format(MOVANY.UNSUPPORTED_FRAME, fn)
 		return
 	 end
-	 
+
 	 if self.NoMove[fn] and self.NoScale[fn] and self.NoAlpha[fn] then
 		maPrint(string.format(MOVANY.FRAME_VISIBILITY_ONLY, fn))
 		return
 	 end
 
 	local f = _G[fn]
-	
+
 	if self.MoveOnlyWhenVisible[fn] and (f == nil or not f:IsShown()) then
 		maPrint(string.format(MOVANY.ONLY_WHEN_VISIBLE, fn))
 		return
 	end
-	
+
 	if self:ErrorNotInCombat(f) then
 		return
 	end
@@ -2069,13 +2072,13 @@ function MovAny:AttachMover(fn, helpfulName)
 		end
 		local created = nil
 		local handled = nil
-		
+
 		if self.lCreateBeforeInteract[fn] and _G[fn] == nil then
 			CreateFrame("Frame", fn, UIParent, self.lCreateBeforeInteract[fn])
 			created = true
 		end
 		f = _G[fn]
-		
+
 		self.lastFrameName = fn
 		if self:IsValidObject(f) then
 			local mover = self:GetAvailableMover()
@@ -2094,7 +2097,7 @@ function MovAny:AttachMover(fn, helpfulName)
 				end
 			end
 		end
-		
+
 		if self.lRunAfterInteract[fn] then
 			self.lRunAfterInteract[fn](handled)
 		end
@@ -2115,7 +2118,7 @@ function MovAny:GetAvailableMover()
 			break
 		end
 	end
-	
+
 	if f then
 		tinsert(self.movers, f)
 		return f
@@ -2135,7 +2138,7 @@ function MovAny:GetDefaultFrameParent(f)
 				local bag = self:GetBagInContainerFrame(_G[ m ])
 				return _G[ bag:GetName() ]
 			end
-			
+
 			local transName = self:Translate(c:GetName(),true,true)
 
 			if self:GetFrameOptions(transName) ~= nil then
@@ -2189,7 +2192,7 @@ function MovAny:ToggleMove( fn )
 	else
 		ret = self:AttachMover( fn )
 	end
-	
+
 	self.lastFrameName = fn
 	self:UpdateGUIIfShown(true)
 	return ret
@@ -2202,7 +2205,7 @@ function MovAny:ToggleHide( fn )
 	else
 		ret = self:HideFrame(fn)
 	end
-	
+
 	self.lastFrameName = fn
 	self:UpdateGUIIfShown(true)
 	return ret
@@ -2238,7 +2241,7 @@ function MovAny:SafeMoveFrameAtCursor()
 			self:ToggleMove(transName)
 			break
 		end
-		
+
 		local p = obj:GetParent()
 		-- check for minimap button
 		if (p == MinimapBackdrop or p == Minimap or p == MinimapCluster) and obj ~= Minimap then
@@ -2280,7 +2283,7 @@ function MovAny:MoveFrameAtCursor()
 	if obj and obj ~= WorldFrame and obj ~= UIParent and obj:GetName() then
 		self:ToggleMove(obj:GetName())
 	end
-	
+
 	self:UpdateGUIIfShown(true)
 end
 
@@ -2322,7 +2325,7 @@ function MovAny:SafeHideFrameAtCursor()
 		end
 		break
 	end
-	
+
 	self:UpdateGUIIfShown(true)
 end
 
@@ -2338,7 +2341,7 @@ function MovAny:HideFrameAtCursor()
 	if obj and obj ~= WorldFrame and obj ~= UIParent then
 		self:ToggleHide(obj:GetName())
 	end
-	
+
 	self:UpdateGUIIfShown(true)
 end
 
@@ -2361,7 +2364,7 @@ function MovAny:SafeResetFrameAtCursor()
 			end
 			fn = obj:GetName()
 		end
-		
+
 		local transName = self:Translate(fn, 1)
 		if transName ~= fn and self.frameOptions[fn] then
 			self:ResetFrameConfirm(fn)
@@ -2394,7 +2397,7 @@ function MovAny:ResetFrameAtCursor()
 			return
 		end
 	end
-	
+
 	if InCombatLockdown() and MovAny:IsProtected(obj) then
 		self:ErrorNotInCombat(obj)
 		return
@@ -2482,7 +2485,7 @@ function MovAny:AttachMoverToFrame( mover, f )
 		f:Show()
 		f:Hide()
 	end
-	
+
 	--[[
 	if f:GetLeft() == nil then
 		maPrint(string.format(MOVANY.FRAME_UNPOSITIONED, f:GetName()))
@@ -2490,10 +2493,10 @@ function MovAny:AttachMoverToFrame( mover, f )
 		return
 	end
 	]]
-	
+
 	mover.attaching = true
 	mover.dontUpdate = nil
-	
+
 	mover:SetClampedToScreen(f:IsClampedToScreen())
 	--[[
 	if not f:IsShown() then
@@ -2501,12 +2504,12 @@ function MovAny:AttachMoverToFrame( mover, f )
 		f:Show()
 	end
 	]]
-	
+
 	local opt = self:GetFrameOptions(f:GetName())
 	if not opt.pos then
 		opt.pos = self:GetRelativePoint(self:GetFirstOrgPoint(opt), f)
 	end
-	
+
 	mover:ClearAllPoints()
 	mover:SetPoint("CENTER", f, "CENTER")
 
@@ -2524,21 +2527,21 @@ function MovAny:AttachMoverToFrame( mover, f )
 	--dbg("  attaching "..f:GetName().." to "..mover:GetName())
 	f:ClearAllPoints()
 	f:SetPoint( "BOTTOMLEFT", mover, "BOTTOMLEFT", 0, 0 )
-	
+
 	if not self.NoMove[fn] then
 		f.orgX = x
 		f.orgY = y
 	end
-	
+
 	mover.tagged = f
-	
+
 	local label = _G[ mover:GetName().."BackdropInfoLabel"]
 	label:Hide()
 	label:ClearAllPoints()
 	label:SetPoint("CENTER", label:GetParent(), "CENTER", 0, 0)
-	
+
 	mover:Show()
-	
+
 	mover.attaching = nil
 end
 
@@ -2547,9 +2550,9 @@ function MovAny:DetachMover( mover )
 		if not mover.dontUpdate then
 			self:MoverUpdatePosition( mover )
 		end
-		
+
 		local f = mover.tagged
-		
+
 		self:ApplyPosition(f, self:GetFrameOptions(f:GetName()))
 		--[[
 		if mover.taggedShown then
@@ -2563,20 +2566,20 @@ function MovAny:DetachMover( mover )
 			f.OnMAOnDetach(f, mover)
 		end
 	end
-	
+
 	mover:Hide()
 	mover.tagged = nil
 	mover.attaching = nil
 	mover.infoShown = nil
-	
+
 	local found
-	
+
 	for i, m in ipairs(self.movers) do
 		if m == mover then
 			tremove(self.movers, i)
 		end
 	end
-	
+
 	if self.currentMover == mover then
 		self:NudgerChangeMover(1)
 	else
@@ -2624,15 +2627,15 @@ function MovAny:ResetFrame(f, dontUpdate, readOnly)
 	if not fn then
 		return
 	end
-	
+
 	if self:ErrorNotInCombat(f) or (InCombatLockdown() and f.UMFP) then
 		return
 	end
-	
+
 	self:StopMoving(fn)
-	
+
 	self.lastFrameName = fn
-	
+
 	if not f then
 		if not readOnly then
 			self:ClearFrameOptions(fn)
@@ -2660,7 +2663,7 @@ function MovAny:ResetFrame(f, dontUpdate, readOnly)
 		end
 
 		self:ResetAll(f, opt, readOnly)
-		
+
 		if width then
 			f:SetWidth(width)
 		end
@@ -2673,11 +2676,11 @@ function MovAny:ResetFrame(f, dontUpdate, readOnly)
 	if not readOnly then
 		self:ClearFrameOptions(fn)
 	end
-	
+
 	if f.OnMAPostReset then
 		f.OnMAPostReset(f, readOnly)
 	end
-	
+
 	if not dontUpdate then
 		self:UpdateGUIIfShown(true)
 	end
@@ -2737,20 +2740,20 @@ function MovAny:HideFrame(f, readOnly)
 	if not f then
 		return true
 	end
-	
+
 	if not self:IsValidObject(f) or not self:HookFrame( fn ) or self:ErrorNotInCombat(f) then
 		return
 	end
-	
+
 	f.MAWasShown = f:IsShown()
-	
+
 	if f.GetAttribute then
 		opt.unit = f:GetAttribute("unit")
 		if opt.unit then
 			f:SetAttribute("unit", nil)
 		end
 	end
-	
+
 	if self.HideList[fn] then
 		for hIndex, hideEntry in pairs(self.HideList[fn]) do
 			local val = _G[hideEntry[1]]
@@ -2783,7 +2786,7 @@ function MovAny:HideFrame(f, readOnly)
 	if f.OnMAHide then
 		f.OnMAHide(f, true)
 	end
-	
+
 	return true
 end
 
@@ -2796,7 +2799,7 @@ function MovAny:ShowFrame( f, readOnly )
 	if not fn then
 		fn = f:GetName()
 	end
-	
+
 	local opt = self:GetFrameOptions(fn)
 	if readOnly == nil and opt then
 		opt.hidden = nil
@@ -2868,12 +2871,12 @@ function MovAny:OnCheckCharacterSpecific( button )
 		MoveAnything_UseCharacterSettings = nil
 	end
 	local newProfile = self:GetProfileName()
-	
+
 	local i = 0
 	if MoveAnything_CharacterSettings[newProfile] == nil then
 		MoveAnything_CharacterSettings[newProfile] = {}
 	else
-		for v in pairs(MoveAnything_CharacterSettings[newProfile]) do 
+		for v in pairs(MoveAnything_CharacterSettings[newProfile]) do
 			i = i + 1
 		end
 	end
@@ -2882,7 +2885,7 @@ function MovAny:OnCheckCharacterSpecific( button )
 	end
 	--MovAny:CleanProfile(oldName)
 	self:UpdateProfile()
-	
+
 	local a = {}
 	for i, o in pairs(MoveAnything_CharacterSettings) do
 		tinsert(a, i)
@@ -2907,7 +2910,7 @@ function MovAny:OnCheckToggleCategories( button )
 	for i, v in pairs(self.cats) do
 		v.collapsed = state
 	end
-	
+
 	self:UpdateGUIIfShown(true)
 end
 
@@ -2918,7 +2921,7 @@ function MovAny:OnCheckToggleModifiedFramesOnly( button )
 	else
 		MADB.modifiedFramesOnly = nil
 	end
-	
+
 	self:UpdateGUIIfShown(true)
 end
 
@@ -2935,11 +2938,11 @@ function MovAny:MoverUpdatePosition( mover )
 		end
 		local opt = self:GetFrameOptions(f:GetName())
 		opt.pos = self:GetRelativePoint(opt.pos or self:GetFirstOrgPoint(opt) or {"BOTTOMLEFT", "UIParent", "BOTTOMLEFT"}, f)
-		
+
 		if f.OnMAPosition then
 			f.OnMAPosition(f)
 		end
-		
+
 		self:UpdateGUIIfShown()
 	end
 end
@@ -2980,26 +2983,26 @@ function MovAny:MoverOnSizeChanged( mover )
 			if s > 0.991 and s < 1 then
 				s = 1
 			end
-			
+
 			if mover.tagged.GetScale and s ~= mover.tagged:GetScale() then
 				opt.scale = s
-			
+
 				--dbg("MoverSizeChanged w: "..numfor(w).." h: "..numfor(h).." s: "..numfor(s))
 				self:ApplyScale(f, opt)
 				--self:MoverUpdatePosition(mover)
 			end
 			mover:SetWidth(w)
 			mover:SetHeight(h)
-			
+
 			local label = _G[ mover:GetName().."BackdropInfoLabel"]
 			label:SetWidth(w+100)
 			label:SetHeight(h)
 		end
-		
+
 		local label = _G[ mover:GetName().."BackdropInfoLabel"]
 		label:ClearAllPoints()
 		label:SetPoint("TOP", label:GetParent(), "TOP", 0, 0)
-		
+
 		local brief, long
 		if mover.tagged and MovAny:CanBeScaled(mover.tagged) then
 			if MovAny.ScaleWH[mover.tagged:GetName()] then
@@ -3016,11 +3019,11 @@ function MovAny:MoverOnSizeChanged( mover )
 				_G[ "MANudgerInfoLabel"]:SetText(long)
 			end
 		end
-		
+
 		label = _G[ mover:GetName().."BackdropMovingFrameName" ]
 		label:ClearAllPoints()
 		label:SetPoint("TOP", label:GetParent(), "TOP", 0, 20)
-		
+
 		self:UpdateGUIIfShown(true)
 	end
 end
@@ -3053,18 +3056,18 @@ function MovAny:MoverOnMouseWheel(mover, arg1)
 	else
 		mover.tagged.alphaAttempts = nil
 	end
-	
+
 	alpha = tonumber(numfor(alpha))
-	
+
 	local opt = self:GetFrameOptions(mover.tagged:GetName())
 	opt.alpha = alpha
 	self:ApplyAlpha(mover.tagged, opt)
-	
+
 	if opt.alpha == opt.originalAlpha then
 		opt.alpha = nil
 		opt.originalAlpha = nil
 	end
-	
+
 	local label = _G[ mover:GetName().."BackdropInfoLabel"]
 	label:Show()
 	label:SetText(numfor(alpha* 100).."%")
@@ -3072,7 +3075,7 @@ function MovAny:MoverOnMouseWheel(mover, arg1)
 		_G[ "MANudgerInfoLabel"]:Show()
 		_G[ "MANudgerInfoLabel"]:SetText("Alpha:"..numfor(alpha * 100).."%")
 	end
-	
+
 	self:UpdateGUIIfShown(true)
 end
 
@@ -3085,7 +3088,7 @@ function MovAny:ResetProfile(readOnly)
 		self.frameOptions = {}
 		MoveAnything_CharacterSettings[self:GetProfileName()] = self.frameOptions
 	end
-	
+
 	self:UpdateGUIIfShown(true)
 end
 
@@ -3094,11 +3097,11 @@ function MovAny:ResetAllFrames(confirm)
 		self:ResetFrame(v.name, true, true)
 	end
 	self:ReanchorRelatives()
-	
+
 	if MADB.squareMM then
 		Minimap:SetMaskTexture("Textures\\MinimapMask")
 	end
-	
+
 	MoveAnything_UseCharacterSettings = false
 	self.frameOptions = {}
 	MoveAnything_CharacterSettings = {}
@@ -3108,7 +3111,7 @@ function MovAny:ResetAllFrames(confirm)
 	MADB.collapsed = true
 	MAOptionsToggleCategories:SetChecked(true)
 	MovAny:OnCheckToggleCategories(MAOptionsToggleCategories)
-	
+
 	self:UpdateGUIIfShown(true)
 end
 
@@ -3166,7 +3169,7 @@ function MovAny:CountGUIItems()
 	local items = 0
 	local nextSepItems = 0
 	local curSep = nil
-	
+
 	if self.searchWord and self.searchWord ~= "" then
 		for i, o in pairs(MovAny.frames) do
 			if not o.sep and o.cat then
@@ -3203,7 +3206,7 @@ function MovAny:CountGUIItems()
 		if curSep then
 			curSep.items = nextSepItems
 		end
-		
+
 		for i, o in pairs(MovAny.frames) do
 			if o.sep then
 				if not MADB.modifiedFramesOnly then
@@ -3232,12 +3235,12 @@ function MovAny:UpdateGUI(recount)
 	if recount or MovAny.guiLines == -1 then
 		MovAny:CountGUIItems()
 	end
-	
+
 	FauxScrollFrame_Update(MAScrollFrame, MovAny.guiLines, MADB.frameListRows, MovAny.SCROLL_HEIGHT)
 	local topOffset = FauxScrollFrame_GetOffset(MAScrollFrame)
 
 	local displayList = {}
-	
+
 	if MovAny.searchWord and MovAny.searchWord ~= "" then
 		local results = {}
 		local skip = topOffset
@@ -3300,19 +3303,19 @@ function MovAny:UpdateGUI(recount)
 				end
 			end
 		end
-		
+
 		if startOffset ~= 0 then
 			-- X: fix off by one
 			if startOffset > 0 then
 				startOffset = startOffset + 1
 			end
 		end
-		
+
 		local sepOffset, wtfOffset
 		sepOffset = 0
 		wtfOffset = 0
 		local skip = topOffset
-		
+
 		for i=1, MADB.frameListRows, 1 do
 			local index = i + sepOffset + wtfOffset
 
@@ -3401,7 +3404,7 @@ function MovAny:UpdateGUI(recount)
 	prefix = "MAMove"
 	move = "Move"
 	hide = "Hide"
-	
+
 	local skip = topOffset
 
 	for i = 1, MADB.frameListRows, 1 do
@@ -3417,14 +3420,14 @@ function MovAny:UpdateGUI(recount)
 			local hideCheck = _G[ prefix..i..hide ]
 			local text, frameNameLabel
 			local idx = MovAny:GetFrameIDX(o)
-			
+
 			frameNameLabel = _G[ prefix..i.."FrameName" ]
 			frameNameLabel.idx = idx
 			row.idx = idx
 			row.name = o.name
 			row:Show()
 
-			
+
 			if o.sep then
 				text = _G[ prefix..i.."FrameNameText" ]
 				text:Hide()
@@ -3446,7 +3449,7 @@ function MovAny:UpdateGUI(recount)
 
 			if fn then
 				_G[ prefix..i.."Backdrop" ]:Show()
-				
+
 				if MovAny.NoMove[fn] and MovAny.NoScale[fn] and MovAny.NoAlpha[fn] then
 					moveCheck:Hide()
 				else
@@ -3477,10 +3480,10 @@ function MovAny:UpdateGUI(recount)
 			end
 		end
 	end
-	
+
 	MAOptionsToggleCategories:SetChecked(MADB.collapsed)
 	MAOptionsToggleModifiedFramesOnly:SetChecked(MADB.modifiedFramesOnly)
-	
+
 	if MovAny.searchWord and MovAny.searchWord ~= "" then
 		MAOptionsFrameNameHeader:SetText(string.format(MOVANY.LIST_HEADING_SEARCH_RESULTS, MovAny.guiLines))
 	else
@@ -3496,7 +3499,7 @@ function MovAny:UpdateGUIIfShown(recount, dontUpdateEditors)
 	if MAOptions and MAOptions:IsShown() then
 		self:UpdateGUI()
 	end
-	
+
 	if not dontUpdateEditors then
 		for fn, fe in pairs(self.frameEditors) do
 			if fe:IsShown() and not fe.updating then
@@ -3511,7 +3514,7 @@ function MovAny:NudgerChangeMover(dir)
 	local first, sel
 	local cur = self.currentMover
 	local matchNext = false
-	
+
 	for i, m in ipairs(self.movers) do
 		if not first then
 			first = m
@@ -3541,7 +3544,7 @@ function MovAny:NudgerChangeMover(dir)
 	if matchNext then
 		self.currentMover = first
 	end
-	
+
 	self:NudgerFrameRefresh()
 end
 
@@ -3556,11 +3559,11 @@ end
 
 function MovAny:MoverOnShow(mover)
 	local mn = mover:GetName()
-	
+
 	MANudger:Show()
 	self.currentMover = mover
 	self:NudgerFrameRefresh()
-	
+
 	mover.startAlpha = mover.tagged:GetAlpha()
 	_G[mn.."Backdrop"]:Show()
 	_G[mn.."BackdropMovingFrameName"]:SetText( mover.helpfulName )
@@ -3575,7 +3578,7 @@ function MovAny:MoverOnShow(mover)
 		_G[mn.."Resize_BOTTOM"]:Show()
 		_G[mn.."Resize_RIGHT"]:Show()
 	end
-	
+
 	_G[ mn.."BackdropInfoLabel"]:SetText("")
 	if mover == self.currentMover then
 		_G[ "MANudgerInfoLabel"]:SetText("")
@@ -3605,7 +3608,7 @@ end
 
 function MovAny:NudgerFrameRefresh()
 	local labelText = ""
-	
+
 	if self.currentMover ~= nil then
 		local cur = 0
 		for i, m in ipairs(self.movers) do
@@ -3615,7 +3618,7 @@ function MovAny:NudgerFrameRefresh()
 			end
 		end
 		labelText = cur.." / "..#self.movers
-		
+
 		local f = self.currentMover.tagged
 		if f then
 			local fn = f:GetName()
@@ -3797,12 +3800,12 @@ function MovAny:SetLeftFrameLocation()
 					MovAny:UnlockPoint(f)
 					f:ClearAllPoints()
 					f:SetPoint("TOPLEFT", "UIPanelMover1", "TOPLEFT")
-					
+
 					if not f.MAOrgScale then
 						f.MAOrgScale = f:GetScale()
 					end
 					f:SetScale(MAGetScale( UIPanelMover1 ), 1)
-					
+
 					if not f.MAOrgAlpha then
 						f.MAOrgAlpha = f:GetAlpha()
 					end
@@ -3852,12 +3855,12 @@ function MovAny:SetCenterFrameLocation()
 						MovAny:UnlockPoint(f)
 						f:ClearAllPoints()
 						f:SetPoint("TOPLEFT", "UIPanelMover2", "TOPLEFT")
-						
+
 						if not f.OrgScale then
 							f.OrgScale = f:GetScale()
 						end
 						f:SetScale(MAGetScale( UIPanelMover2 ), 1)
-						
+
 						if not f.OrgAlpha then
 							f.OrgAlpha = f:GetAlpha()
 						end
@@ -3930,16 +3933,16 @@ function MovAny:GrabContainerFrame( container, movableBag )
 		MovAny:UnlockScale(container)
 		container:SetScale(MAGetScale( movableBag ))
 		MovAny:LockScale(container)
-		
+
 		MovAny:UnlockPoint(container)
 		container:ClearAllPoints()
 		--container:SetPoint("BOTTOMLEFT", "UIParent", "BOTTOMLEFT", movableBag:GetLeft(), movableBag:GetBottom())
 		container:SetPoint("CENTER", movableBag, "CENTER", 0, 0)
 		MovAny:LockPoint(container)
-		
+
 		movableBag.attachedChildren = {}
 		tinsert(movableBag.attachedChildren, container)
-		
+
 		--local opts = MovAny:GetFrameOptions(movableBag:GetName())
 		--MovAny:ApplyAlpha(container, opts)
 		container:SetAlpha(movableBag:GetAlpha())
@@ -3966,7 +3969,7 @@ end
 
 function MovAny:ResetAll(f, opt, readOnly)
 	opt = opt or MovAny:GetFrameOptions(f:GetName())
-	
+
 	MovAny:ResetScale(f, opt, readOnly)
 	MovAny:ResetPosition(f, opt, readOnly)
 	MovAny:ResetAlpha(f, opt, readOnly)
@@ -3988,18 +3991,18 @@ function MovAny:UnanchorRelatives(f, opt)
 	if not p then
 		return
 	end
-	
+
 	opt = opt or self:GetFrameOptions(f:GetName())
-	
+
 	--dbg("searching for relatives to "..f:GetName().." in "..p:GetName())
-	
+
 	local named = {}
-	
+
 	self:_AddNamedChildren(named, f)
-	
+
 	local relatives = tcopy(named)
 	relatives[ f ] = f
-	
+
 	if p.GetRegions then
 		local children = {p:GetRegions()}
 		if children ~= nil then
@@ -4009,7 +4012,7 @@ function MovAny:UnanchorRelatives(f, opt)
 			end
 		end
 	end
-	
+
 	if p.GetChildren then
 		local children = {p:GetChildren()}
 		if children ~= nil then
@@ -4019,14 +4022,14 @@ function MovAny:UnanchorRelatives(f, opt)
 			end
 		end
 	end
-	
+
 	relatives[ f ] = nil
 	relatives[GameTooltip] = nil
-	
+
 	for i, v in pairs(named) do
 		relatives[ v ] = nil
 	end
-	
+
 	--local fRel = self:ForcedDetachFromParent(f:GetName())
 	local fRel = select(2, opt.orgPos)
 	if fRel == nil then
@@ -4041,7 +4044,7 @@ function MovAny:UnanchorRelatives(f, opt)
 			if --[[self:IsDefaultFrame(v) and ]]not self:IsContainer(v:GetName()) and not string.match(v:GetName(), "BagFrame[1-9][0-9]*") and not self.NoUnanchoring[ v:GetName() ] and not v.MAPoint then -- alternatively use not self:GetFrameOptions(v:GetName()) instead of v.MAPoint
 				if v:GetRight() ~= nil and v:GetTop() ~= nil then
 					--dbg(" unanchoring "..v:GetName().." from "..f:GetName())
-					
+
 					local p = {v:GetPoint(1)}
 					p[2] = fRel
 					p = MovAny:GetRelativePoint(p, v, true)
@@ -4076,7 +4079,7 @@ end
 
 function MovAny:_AddNamedChildren(l, f)
 	local n
-	
+
 	if f.GetChildren then
 		local children = {f:GetChildren()}
 		if children ~= nil then
@@ -4091,7 +4094,7 @@ function MovAny:_AddNamedChildren(l, f)
 			end
 		end
 	end
-	
+
 	if f.attachedChildren then
 		local children = f.attachedChildren
 		if children ~= nil then
@@ -4152,26 +4155,26 @@ function MovAny:ApplyPosition(f, opt)
 	if not opt or self.NoMove[ f:GetName() ] then
 		return
 	end
-	
+
 	if opt.pos then
 		local fn = f:GetName()
 		if opt.orgPos == nil and not self:IsContainer(f:GetName()) and string.match("BagFrame", f:GetName()) ~= nil then
 			MovAny:StoreOrgPoints(f, opt)
 		end
-		
+
 		if UIPARENT_MANAGED_FRAME_POSITIONS[fn] then
 			f.ignoreFramePositionManager = true
 		end
-		
+
 		self:UnlockPoint(f)
 		f:ClearAllPoints()
 		f:SetPoint(unpack(opt.pos))
 		self:LockPoint(f)
-		
+
 		if f.OnMAPosition then
 			f.OnMAPosition(f)
 		end
-		
+
 		if f.attachedChildren then
 			for i, v in pairs(f.attachedChildren) do
 				if not v.ignoreFramePositionManager and v.GetName and UIPARENT_MANAGED_FRAME_POSITIONS[v:GetName()] and not v.ignoreFramePositionManager and not MovAny:IsModified(v) and v.GetName and UIPARENT_MANAGED_FRAME_POSITIONS[v:GetName()] then
@@ -4180,7 +4183,7 @@ function MovAny:ApplyPosition(f, opt)
 				end
 			end
 		end
-		
+
 		if UIPanelWindows[fn] and f ~= GameMenuFrame then
 			local left = GetUIPanel("left")
 			local center = GetUIPanel("center")
@@ -4194,7 +4197,7 @@ function MovAny:ApplyPosition(f, opt)
 			elseif f == center then
 				UIParent.center = nil
 			end
-			
+
 			local wasShown = f:IsShown()
 			if wasShown and (not MovAny:IsProtected(f) or not InCombatLockdown()) then
 				HideUIPanel(f)
@@ -4205,7 +4208,7 @@ function MovAny:ApplyPosition(f, opt)
 			end
 			UIPanelWindows[fn] = nil
 			f:SetAttribute("UIPanelLayout-enabled", false)
-			
+
 			if wasShown and f ~= MerchantFrame and (not MovAny:IsProtected(f) or not InCombatLockdown()) then
 				f:Show()
 			end
@@ -4218,13 +4221,13 @@ function MovAny:ResetPosition(f, opt, readOnly)
 		return
 	end
 	MovAny:UnlockPoint(f)
-	
+
 	local umfp = nil
 	if f.ignoreFramePositionManager then
 		umfp = true
 		f.ignoreFramePositionManager = nil
 	end
-	
+
 	if opt.orgPos then
 		self:RestoreOrgPoints(f, opt, readOnly)
 	else
@@ -4265,7 +4268,7 @@ function MovAny:ResetPosition(f, opt, readOnly)
 			end
 		end
 	end
-	
+
 	if opt.UIPanelWindows then
 		UIPanelWindows[ f:GetName() ] = opt.UIPanelWindows
 		if not readOnly then
@@ -4277,11 +4280,11 @@ function MovAny:ResetPosition(f, opt, readOnly)
 			ShowUIPanel(f)
 		end
 	end
-	
+
 	if umfp and not InCombatLockdown() then
 		UIParent_ManageFramePositions()
 	end
-	
+
 	f.MAOrgParent = nil
 end
 
@@ -4290,13 +4293,13 @@ function MovAny:ApplyAlpha(f, opt)
 		return
 	end
 	local alpha = opt.alpha
-	
+
 	if alpha and alpha >= 0 and alpha <= 1 then
 		if opt.originalAlpha == nil then
 			opt.originalAlpha = f:GetAlpha()
 		end
 		f:SetAlpha(alpha)
-		
+
 		if f.attachedChildren then
 			for i, v in pairs(f.attachedChildren) do
 				if v:GetAlpha() ~= 1 then
@@ -4315,22 +4318,22 @@ function MovAny:ResetAlpha(f, opt, readOnly)
 	if not opt or MovAny.NoAlpha[ f:GetName() ] then
 		return
 	end
-	
+
 	local alpha = opt.originalAlpha
 	if alpha == nil or alpha > 1 then
 		alpha = 1
 	elseif alpha < 0 then
 		alpha = 0
 	end
-	
+
 	f:SetAlpha(alpha)
-	
+
 	if f.attachedChildren then
 		for i, v in pairs(f.attachedChildren) do
 			v:SetAlpha(alpha)
 		end
 	end
-	
+
 	if f.OnMAAlpha then
 		f.OnMAAlpha(f, alpha)
 	end
@@ -4351,16 +4354,16 @@ function MovAny:ResetHide(f, opt, readOnly)
 	if not opt or MovAny.NoHide[ f:GetName() ] then
 		return
 	end
-	
+
 	local wasHidden = opt.hidden
 	if not readOnly then
 		opt.hidden = nil
 	end
-	
+
 	if wasHidden then
 		self:ShowFrame(f, readOnly)
 	end
-	
+
 	if f.OnMAHide then
 		f.OnMAHide(f, nil)
 	end
@@ -4370,12 +4373,12 @@ function MovAny:ApplyScale( f, opt, readOnly )
 	if not opt or not self:CanBeScaled(f) then
 		return
 	end
-	
+
 	self:UnlockScale(f)
 	if f.GetName and self.ScaleWH[ f:GetName() ] then
 		if opt.width or opt.height then
 			--dbg(f:GetName().."::ApplyScale WH w:"..opt.width.." h:"..opt.height)
-		
+
 			if opt.width and opt.originalWidth == nil then
 				opt.originalWidth = f:GetWidth()
 			end
@@ -4410,10 +4413,10 @@ function MovAny:ApplyScale( f, opt, readOnly )
 			--dbg("no org scale, setting "..f:GetName().." to: "..f:GetScale())
 			opt.originalScale = f:GetScale()
 		end
-		
+
 		f:SetScale(opt.scale)
 		self:LockScale(f)
-		
+
 		if self.lHideOnScale[ f:GetName() ] then
 			for i,v in pairs(self.lHideOnScale[ f:GetName() ]) do
 				self:LockVisibility(v)
@@ -4425,7 +4428,7 @@ function MovAny:ApplyScale( f, opt, readOnly )
 				self:ApplyScale(v, opt)
 			end
 		end
-		
+
 		if self.lLinkedScaling[ f:GetName() ] then
 			for i,v in pairs(self.lLinkedScaling[ f:GetName() ]) do
 				if not self:IsModified(v) then
@@ -4444,7 +4447,7 @@ function MovAny:ResetScale(f, opt, readonly)
 	if not opt or (f.GetName and self.NoScale[ f:GetName() ]) then
 		return
 	end
-	
+
 	self:UnlockScale(f)
 	if self.ScaleWH[ f:GetName() ] then
 		if (opt.originalWidth and f:GetWidth() ~= opt.originalWidth) or (opt.originalHeight and f:GetHeight() ~= opt.originalHeight) then
@@ -4486,7 +4489,7 @@ function MovAny:ResetScale(f, opt, readonly)
 		if scale ~= f:GetScale() then
 			f:SetScale(scale)
 		end
-		
+
 		if self.lHideOnScale[ f:GetName() ] then
 			for i,v in pairs(self.lHideOnScale[ f:GetName() ]) do
 				self:UnlockVisibility(v)
@@ -4587,26 +4590,26 @@ function MovAny:ApplyMisc(f, opt, readOnly)
 	if not opt then
 		return
 	end
-	
+
 	if opt.frameStrata then
 		if not opt.orgFrameStrata then
 			opt.orgFrameStrata = f:GetFrameStrata()
 		end
 		f:SetFrameStrata(opt.frameStrata)
 	end
-	
+
 	if opt.clampToScreen then
 		if not opt.orgClampToScreen then
 			opt.orgClampToScreen = f:IsClampedToScreen()
 		end
 		f:SetClampedToScreen(opt.clampToScreen)
 	end
-	
+
 	if opt.enableMouse ~= nil then
 		opt.orgEnableMouse = f:IsMouseEnabled()
 		f:EnableMouse(opt.enableMouse)
 	end
-	
+
 	if opt.movable ~= nil then
 		opt.orgMovable = f:IsMovable()
 		f:SetMovable(opt.movable)
@@ -4624,7 +4627,7 @@ function MovAny:ResetMisc(f, opt, readOnly)
 			opt.orgFrameStrata = nil
 		end
 	end
-	
+
 	if opt.orgEnableMouse then
 		f:EnableMouse(opt.orgEnableMouse)
 		if not readOnly then
@@ -4632,7 +4635,7 @@ function MovAny:ResetMisc(f, opt, readOnly)
 			opt.enableMouse = nil
 		end
 	end
-	
+
 	if opt.orgMovable then
 		f:SetMovable(opt.orgMovable)
 		if not readOnly then
@@ -4699,10 +4702,10 @@ function MovAny:hUpdateContainerFrameAnchors()
     bag = MovAny:GetBagInContainerFrame(frame)
     if not bag or ( bag and not MovAny:IsModified(bag:GetName()) and not MovAny:GetMoverByFrameName(bag:GetName()) ) then
 		--dbg("uCFA: "..bag:GetName().."")
-		
+
 		MovAny:UnlockScale(frame)
 	    frame:SetScale(containerScale)
-		
+
 		MovAny:UnlockPoint(frame)
 	    frame:ClearAllPoints()
 	    if lastBag == nil then
@@ -4771,7 +4774,7 @@ SlashCmdList["MAIMPORT"] = function( msg )
 		maPrint(MOVANY.DISABLED_DURING_COMBAT)
 		return
 	end
-	
+
 	if MoveAnything_CharacterSettings[msg] == nil then
 		maPrint(string.format(MOVANY.PROFILE_UNKNOWN, msg))
 		return
@@ -4813,7 +4816,7 @@ SlashCmdList["MADELETE"] = function( msg )
 		maPrint(MOVANY.CMD_SYNTAX_DELETE)
 		return
 	end
-	
+
 	if MoveAnything_CharacterSettings[msg] == nil then
 		maPrint(string.format(MOVANY.PROFILE_UNKNOWN, msg))
 		return
@@ -4930,7 +4933,7 @@ function MovAny:EnableFrame(fn)
 		return
 	end
 	opts.disabled = nil
-	
+
 	local f = _G[fn]
 	if not f then
 		return
@@ -4967,7 +4970,7 @@ function MovAny:HookTooltip(mover)
 	r = mover:GetRight() * mover:GetEffectiveScale()
 	t = mover:GetTop() * mover:GetEffectiveScale()
 	b = mover:GetBottom() * mover:GetEffectiveScale()
-	
+
 	anchor = "CENTER"
 	if ((b + t) / 2) < ((UIParent:GetTop() * UIParent:GetScale()) / 2) - 25 then
 		anchor = "BOTTOM"
@@ -4983,19 +4986,19 @@ function MovAny:HookTooltip(mover)
 	end
 	MovAny:UnlockPoint(tooltip)
 	tooltip:ClearAllPoints()
-	
+
 	if tooltip:GetOwner() then
 		tooltip.MASkip = true
 		tooltip:SetOwner(tooltip:GetOwner(), "ANCHOR_NONE")
 		tooltip.MASkip = nil
 	end
-	
+
 	tooltip:SetPoint(anchor, mover, anchor, 0, 0)
 	tooltip:SetParent(mover)
 	--tooltip.default = 1
-	
+
 	MovAny:LockPoint(tooltip)
-	
+
 	local opt = MovAny:GetFrameOptions(mover:GetName())
 	--MovAny:ApplyScale(tooltip, opt, true)
 	--MovAny:ApplyAlpha(tooltip, opt, true)
@@ -5086,13 +5089,13 @@ function MovAny:GetFrameTooltipLines(fn)
 	if not fn then
 		return
 	end
-	
+
 	local opts = MovAny:GetFrameOptions(fn)
 	local o = MovAny:GetFrame(fn)
 	local msgs = {}
 	local enough = nil
 	local added = nil
-	
+
 	tinsert(msgs, o.helpfulName or fn)
 	if opts then
 		if opts.hidden then
@@ -5133,7 +5136,7 @@ function MovAny:GetFrameTooltipLines(fn)
 			enough = true
 			added = true
 		end
-		
+
 		added = nil
 		if opts.scale then
 			if not added then
@@ -5214,7 +5217,7 @@ function MovAny:DebugFrameAtCursor()
 				o = o.tagged
 			end
 		end
-		
+
 		if o ~= WorldFrame and o ~= UIParent then
 			MovAny:Dump(o)
 		end
@@ -5228,11 +5231,11 @@ function MovAny:Dump(o)
 	end
 
 	maPrint("Name: "..o:GetName())
-	
+
 	if o.GetObjectType then
 		maPrint("Type: "..o:GetObjectType())
 	end
-	
+
 	local p = o:GetParent()
 	if p == nil then
 		p = UIParent
@@ -5240,11 +5243,11 @@ function MovAny:Dump(o)
 	if o ~= p then
 		maPrint("Parent: "..(p:GetName() or "unnamed"))
 	end
-	
+
 	if o.MAParent then
 		maPrint("MA Parent: "..(o.MAParent:GetName() or "unnamed"))
 	end
-	
+
 	local point = {o:GetPoint()}
 	if point and point[1] and point[2] and point[3] and point[4] and point[5] then
 		if not point[2] then
@@ -5252,7 +5255,7 @@ function MovAny:Dump(o)
 		end
 		maPrint("Point: "..point[1]..", "..point[2]:GetName()..", "..point[3]..", "..point[4]..", "..point[5])
 	end
-	
+
 	if o:GetTop() then
 		maPrint("Top: "..o:GetTop())
 	end
@@ -5408,7 +5411,7 @@ function MADebug()
 		ct = ct + 1
 		maPrint(ct..": "..v.name)
 	end
-	
+
 	ct = 0
 	maPrint("Frame options: "..tlen(MovAny.frameOptions))
 	for i, v in pairs(MovAny.frameOptions) do
@@ -5434,7 +5437,7 @@ end
 
 function MovAny:SetOptions()
 	MoveAnything_UseCharacterSettings = MAOptCharacterSpecific:GetChecked()
-	
+
 	MADB.alwaysShowNudger = MAOptAlwaysShowNudger:GetChecked()
 	MADB.noBags = MAOptNoBags:GetChecked()
 	MADB.noMMMW = MAOptNoMMMW:GetChecked()
@@ -5451,7 +5454,7 @@ function MovAny:SetDefaultOptions()
 	if MADB.squareMM then
 		Minimap:SetMaskTexture("Textures\\MinimapMask")
 	end
-	
+
 	MADB.alwaysShowNudger = nil
 	MADB.noBags = nil
 	MADB.noMMMW = nil
@@ -5461,7 +5464,7 @@ function MovAny:SetDefaultOptions()
 	MADB.squareMM = nil
 	MADB.dontSearchFrameNames = nil
 	MADB.frameListRows = 18
-	
+
 	MovAny_OptionsOnShow()
 	MovAny:UpdateGUIIfShown()
 end
@@ -5487,7 +5490,7 @@ function MovAny_OptionsOnShow()
 	if MADB.frameListRows then
 		MAOptRowsSlider:SetValue(MADB.frameListRows)
 	end
-	
+
 	local a = {}
 	for i, o in pairs(MoveAnything_CharacterSettings) do
 		tinsert(a, i)
@@ -5504,14 +5507,14 @@ end
 
 function MovAny:SetNumRows(num, dontUpdate)
 	MADB.frameListRows = num
-	
+
 	local base = 0
 	local h = 24
-	
+
 	MAOptions:SetHeight(base + 81 + (num * h))
 	MAScrollFrame:SetHeight(base + 11 + (num * h))
 	MAScrollBorder:SetHeight(base - 22 + (num * h))
-	
+
 	for i = 1, 100, 1 do
 		local row = _G["MAMove"..i]
 		if num >= i then
@@ -5522,7 +5525,7 @@ function MovAny:SetNumRows(num, dontUpdate)
 				else
 					row:SetPoint("TOPLEFT", "MAMove"..(i - 1), "BOTTOMLEFT")
 				end
-				
+
 				local label = _G[ "MAMove"..i.."FrameName" ]
 				label:SetScript("OnEnter", MovAny_TooltipShowMultiline)
 				label:SetScript("OnLeave", MovAny_TooltipHide)
@@ -5533,7 +5536,7 @@ function MovAny:SetNumRows(num, dontUpdate)
 			end
 		end
 	end
-	
+
 	if not dontUpdate then
 		self:UpdateGUIIfShown(true)
 	end
