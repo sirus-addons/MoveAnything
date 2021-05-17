@@ -158,10 +158,10 @@ MovAny = {
 			VehicleMenuBarActionButtonFrame:SetHeight(VehicleMenuBarActionButton1:GetHeight() + 2)
 			VehicleMenuBarActionButtonFrame:SetWidth((VehicleMenuBarActionButton1:GetWidth() + 2) * VEHICLE_MAX_ACTIONBUTTONS)
 		 end,
-		 LFDSearchStatus = function()
-			local opt = MovAny:GetFrameOptions("LFDSearchStatus")
+		 QueueStatusFrame = function()
+			local opt = MovAny:GetFrameOptions("QueueStatusFrame")
 			if not opt or not opt.frameStrata then
-				LFDSearchStatus:SetFrameStrata("TOOLTIP")
+				QueueStatusFrame:SetFrameStrata("TOOLTIP")
 			end
 		 end,
 	},
@@ -490,7 +490,6 @@ MovAny = {
 
 		{"", "Battlegrounds & PvP"},
 		{"PVPParentFrame", "PVP Window"},
-		{"BattlefieldMinimap", "Battlefield Minimap"},
 		{"BattlefieldFrame", "Battleground Queue"},
 		{"WorldStateScoreFrame", "Battleground Score"},
 		{"WorldStateCaptureBar1", "Flag Capture Timer Bar"},
@@ -512,7 +511,6 @@ MovAny = {
 		{"", "Dungeons & Raids"},
 		{"LFDParentFrame", "Dungeon Finder"},
 		{"DungeonCompletionAlertFrame1", "Dungeon Completion Alert"},
-		{"LFDSearchStatus", "Dungeon Search Status Tooltip"},
 		{"LFDDungeonReadyDialog", "Dungeon Ready Dialog"},
 		{"LFDDungeonReadyPopup", "Dungeon Ready Popup"},
 		{"LFDDungeonReadyStatus", "Dungeon Ready Status"},
@@ -590,17 +588,16 @@ MovAny = {
 		{"MinimapBorderTop", "Top Border"},
 		{"MinimapBackdrop", "Round Border"},
 		{"MinimapNorthTag", "North Indicator"},
-		{"MiniMapBattlefieldFrame", "Battleground  Button"},
 		{"GameTimeFrame", "Calendar Button"},
 		{"TimeManagerClockButton", "Clock Button"},
 		{"MiniMapInstanceDifficulty", "Dungeon Difficulty"},
-		{"MiniMapLFGFrame", "LFD/R Button"},
-		{"LFDSearchStatus", "LFD/R Search Status"},
 		{"MiniMapMailFrame", "Mail Notification"},
 		{"MiniMapTracking", "Tracking Button"},
 		{"MinimapZoomIn", "Zoom In Button"},
 		{"MinimapZoomOut", "Zoom Out Button"},
 		{"MiniMapWorldMapButton", "World Map Button"},
+		{"QueueStatusMinimapButton", "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|tQueue Status Button"},
+		{"QueueStatusFrame", "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|tQueue Status Tooltip"},
 
 		{"", "Miscellaneous"},
 		{"TimeManagerFrame", "Alarm Clock"},
