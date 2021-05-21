@@ -1,4 +1,5 @@
 name: MoveAnything
 description: README.md
 version: 4
+category: 17
 directories: ["MoveAnything"]
