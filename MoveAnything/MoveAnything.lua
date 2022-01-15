@@ -418,6 +418,7 @@ MovAny = {
 		TargetDebuffsMover = "TargetDebuffsMover",
 		FocusDebuffsMover = "FocusDebuffsMover",
 		TargetFrameToTDebuffsMover = "TargetFrameToTDebuffsMover",
+		FocusFrameToTDebuffsMover = "FocusFrameToTDebuffsMover",
 	},
 	lAllowedMAFrames = {
 		MAOptions = "MAOptions",
@@ -536,7 +537,7 @@ MovAny = {
 		{"FocusFrameSpellBar", "Focus Casting Bar"},
 		{"FocusDebuffsMover", "Focus Debuffs"},
 		{"FocusFrameToT", "Target of Focus"},
-		{"FocusFrameToTDebuff1", "Target of Focus Debuffs"},
+		{"FocusFrameToTDebuffsMover", "Target of Focus Debuffs"},
 
 		{"", "Game Menu"},
 		{"GameMenuFrame", "Game Menu"},

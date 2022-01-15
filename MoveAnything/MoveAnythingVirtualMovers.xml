@@ -1444,6 +1444,50 @@
 			</OnLoad>
 		</Scripts>
 	</Frame>
+
+	<Frame name="FocusFrameToTDebuffsMover" parent="UIParent" hidden="true" enableMouse="false">
+		<Size>
+			<AbsDimension x="57" y="14"/>
+		</Size>
+		<Anchors>
+			<Anchor point="TOPLEFT" relativeTo="FocusFrameToT" relativePoint="TOPRIGHT">
+				<Offset>
+					<AbsDimension x="3" y="-9"/>
+				</Offset>
+			</Anchor>
+		</Anchors>
+		<Scripts>
+			<OnLoad>
+				for i = 1, 4, 1 do
+					local b = _G[ "FocusFrameToTDebuff"..i ]
+					b.MAParent = self
+				end
+				self.OnMAHook = function(self)
+					--self:SetPoint("TOPLEFT", FocusFrameToT, "TOPRIGHT", 4, -10)
+					self:SetScale(_G["FocusFrameToT"]:GetEffectiveScale() / UIParent:GetScale())
+					local b
+					self.attachedChildren = {}
+					for i = 1, 4, 1 do
+						b = _G[ "FocusFrameToTDebuff"..i ]
+						tinsert(self.attachedChildren, b)
+						if i == 1 then
+							b:ClearAllPoints()
+							b:SetPoint("TOPLEFT", self, "TOPLEFT", 1, -1)
+							MovAny:LockPoint(b)
+						end
+					end
+					self:Show()
+				end
+				self.OnMAPostReset = function(self)
+					local b = _G["FocusFrameToTDebuff1"]
+					MovAny:UnlockPoint(b)
+					b:ClearAllPoints()
+					b:SetPoint("TOPLEFT", FocusFrameToT, "TOPRIGHT", 4, -10)
+					self:Hide()
+				end
+			</OnLoad>
+		</Scripts>
+	</Frame>
 	
 	<Frame name="PlayerBuffsMover" parent="UIParent" hidden="true" enableMouse="false">
 		<Size>
