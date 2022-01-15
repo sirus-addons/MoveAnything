@@ -4146,6 +4146,7 @@ function MovAny:AddPendingPoint(f, p)
 			MovAny:LockPoint(f)
 		end
 	end
+	local fn = f:GetName()
 	MovAny.pendingActions[fn..":Point"] = closure(f, p)
 end
 
@@ -5443,6 +5444,7 @@ function MovAny:SetOptions()
 	MADB.tooltips = MAOptShowTooltips:GetChecked()
 	MADB.closeGUIOnEscape = MAOptCloseGUIOnEscape:GetChecked()
 	MADB.squareMM = MAOptsSquareMM:GetChecked()
+	MADB.dontSyncWhenLeavingCombat = MAOptDontSyncWhenLeavingCombat:GetChecked()
 	MADB.dontSearchFrameNames = MAOptDontSearchFrameNames:GetChecked()
 	MADB.frameListRows = MAOptRowsSlider:GetValue()
 end
@@ -5460,6 +5462,7 @@ function MovAny:SetDefaultOptions()
 	MADB.tooltips = nil
 	MADB.closeGUIOnEscape = nil
 	MADB.squareMM = nil
+	MADB.dontSyncWhenLeavingCombat = nil
 	MADB.dontSearchFrameNames = nil
 	MADB.frameListRows = 18
 
@@ -5484,6 +5487,7 @@ function MovAny_OptionsOnShow()
 	MAOptSquareMM:SetChecked(MADB.squareMM)
 	MAOptNoMMMW:SetChecked(MADB.noMMMW)
 	MAOptCharacterSpecific:SetChecked(MoveAnything_UseCharacterSettings)
+	MAOptDontSyncWhenLeavingCombat:SetChecked(MADB.dontSyncWhenLeavingCombat)
 	MAOptDontSearchFrameNames:SetChecked(MADB.dontSearchFrameNames)
 	if MADB.frameListRows then
 		MAOptRowsSlider:SetValue(MADB.frameListRows)
@@ -5567,7 +5571,9 @@ end
 
 function MovAny_OnEvent(self, event, ...)
 	if event == "PLAYER_REGEN_ENABLED" then
-		--MovAny:SyncFrames()
+		if not MADB.dontSyncWhenLeavingCombat then
+			MovAny:SyncFrames()
+		end
 	elseif event == "ADDON_LOADED" or event == "RAID_ROSTER_UPDATE" then
 		MovAny:SyncFrames()
 	elseif event == "PLAYER_LOGOUT" then

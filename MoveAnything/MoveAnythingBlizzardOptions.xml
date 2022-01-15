@@ -222,9 +222,29 @@
 				</Scripts>
 			</CheckButton>
 			
-			<CheckButton name="MAOptSquareMM" inherits="MACheckButtonTemplate">
+			<CheckButton name="MAOptDontSyncWhenLeavingCombat" inherits="MACheckButtonTemplate">
 				<Anchors>
 					<Anchor point="TOPLEFT" relativeTo="MAOptDontHookCreateFrame" relativePoint="BOTTOMLEFT">
+						<Offset>
+							<AbsDimension x="0" y="-1"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						self.alwaysShowTooltip = true
+						self.tooltipText = "Toggles if MoveAnything will synchronize pending frames when leaving combat.\n\nDisabling this may result in protected frames requiring a manual sync when leaving combat."
+						_G[self:GetName().."Text"]:SetText("Disable sync when leaving combat")
+					</OnLoad>
+					<OnClick>
+						MovAny:OptionCheckboxChecked(self, "dontSyncWhenLeavingCombat")
+					</OnClick>
+				</Scripts>
+			</CheckButton>
+			
+			<CheckButton name="MAOptSquareMM" inherits="MACheckButtonTemplate">
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="MAOptDontSyncWhenLeavingCombat" relativePoint="BOTTOMLEFT">
 						<Offset>
 							<AbsDimension x="0" y="-1"/>
 						</Offset>
