@@ -1,6 +1,6 @@
 ## Interface: 30300
 ## Title: MoveAnything
-## Notes: |@Version: 5@|11.01 by Wagthaa
+## Notes: |@Version: 6@|11.01 by Wagthaa
 ## Version: 11.01
 ## Author: Classic: Skrag - Mod: Jason - TBC: Vincent - WotLK & Cataclysm: Wagthaa @ Earthen Ring EU wagthaa@gmail.com
 ## SavedVariables: MoveAnything_CustomFrames, MoveAnything_CharacterSettings, MoveAnything_UseCharacterSettings, MADB

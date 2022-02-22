@@ -602,7 +602,7 @@ MovAny = {
 
 		{"", "Miscellaneous"},
 		{"TimeManagerFrame", "Alarm Clock"},
-		{"AuctionFrame", "Auction House"},
+		{"AuctionHouseFrame", "Auction House"},
 		{"BarberShopFrame", "Barber Shop"},
 		{"MirrorTimer1", "Breath/Fatigue Bar"},
 		{"CalendarFrame", "Calendar"},
