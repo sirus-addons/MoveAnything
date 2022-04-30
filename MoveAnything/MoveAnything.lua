@@ -2495,7 +2495,9 @@ function MovAny:AttachMoverToFrame( mover, f )
 	mover.attaching = true
 	mover.dontUpdate = nil
 
-	mover:SetClampedToScreen(f:IsClampedToScreen())
+	if f.IsClampedToScreen then
+		mover:SetClampedToScreen(f:IsClampedToScreen())
+	end
 	--[[
 	if not f:IsShown() then
 		mover.taggedShown = true
