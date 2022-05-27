@@ -1006,7 +1006,7 @@
 					_G[ "PartyMemberFrame"..self.id.."Debuff"..i ].MAParent = self
 				end
 				self.OnMAHook = function(self)
-					self:SetScale(_G["PartyMember"..self.id]:GetEffectiveScale() / UIParent:GetScale())
+					self:SetScale(_G["PartyMemberFrame"..self.id]:GetEffectiveScale() / UIParent:GetScale())
 					local b
 					self.attachedChildren = {}
 					for i = 1, MAX_PARTY_DEBUFFS, 1 do
@@ -1049,7 +1049,7 @@
 					_G[ "PartyMemberFrame"..self.id.."Debuff"..i ].MAParent = self
 				end
 				self.OnMAHook = function(self)
-					self:SetScale(_G["PartyMember"..self.id]:GetEffectiveScale() / UIParent:GetScale())
+					self:SetScale(_G["PartyMemberFrame"..self.id]:GetEffectiveScale() / UIParent:GetScale())
 					local b
 					self.attachedChildren = {}
 					for i = 1, MAX_PARTY_DEBUFFS, 1 do
@@ -1092,7 +1092,7 @@
 					_G[ "PartyMemberFrame"..self.id.."Debuff"..i ].MAParent = self
 				end
 				self.OnMAHook = function(self)
-					self:SetScale(_G["PartyMember"..self.id]:GetEffectiveScale() / UIParent:GetScale())
+					self:SetScale(_G["PartyMemberFrame"..self.id]:GetEffectiveScale() / UIParent:GetScale())
 					local b
 					self.attachedChildren = {}
 					for i = 1, MAX_PARTY_DEBUFFS, 1 do
@@ -1135,7 +1135,7 @@
 					_G[ "PartyMemberFrame"..self.id.."Debuff"..i ].MAParent = self
 				end
 				self.OnMAHook = function(self)
-					self:SetScale(_G["PartyMember"..self.id]:GetEffectiveScale() / UIParent:GetScale())
+					self:SetScale(_G["PartyMemberFrame"..self.id]:GetEffectiveScale() / UIParent:GetScale())
 					local b
 					self.attachedChildren = {}
 					for i = 1, MAX_PARTY_DEBUFFS, 1 do
