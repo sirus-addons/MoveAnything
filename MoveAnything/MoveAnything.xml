@@ -221,6 +221,26 @@
 			<Button name="$parentResize_RIGHT" inherits="MAResizeButton"/>
 		</Frames>
 	</Frame>
+	<Frame name="MAMover1" inherits="MAMoverTemplate" parent="UIParent" id="1"/>
+	<Frame name="MAMover2" inherits="MAMoverTemplate" parent="UIParent" id="2"/>
+	<Frame name="MAMover3" inherits="MAMoverTemplate" parent="UIParent" id="3"/>
+	<Frame name="MAMover4" inherits="MAMoverTemplate" parent="UIParent" id="4"/>
+	<Frame name="MAMover5" inherits="MAMoverTemplate" parent="UIParent" id="5"/>
+	<Frame name="MAMover6" inherits="MAMoverTemplate" parent="UIParent" id="6"/>
+	<Frame name="MAMover7" inherits="MAMoverTemplate" parent="UIParent" id="7"/>
+	<Frame name="MAMover8" inherits="MAMoverTemplate" parent="UIParent" id="8"/>
+	<Frame name="MAMover9" inherits="MAMoverTemplate" parent="UIParent" id="9"/>
+	<Frame name="MAMover10" inherits="MAMoverTemplate" parent="UIParent" id="10"/>
+	<Frame name="MAMover11" inherits="MAMoverTemplate" parent="UIParent" id="11"/>
+	<Frame name="MAMover12" inherits="MAMoverTemplate" parent="UIParent" id="12"/>
+	<Frame name="MAMover13" inherits="MAMoverTemplate" parent="UIParent" id="13"/>
+	<Frame name="MAMover14" inherits="MAMoverTemplate" parent="UIParent" id="14"/>
+	<Frame name="MAMover15" inherits="MAMoverTemplate" parent="UIParent" id="15"/>
+	<Frame name="MAMover16" inherits="MAMoverTemplate" parent="UIParent" id="16"/>
+	<Frame name="MAMover17" inherits="MAMoverTemplate" parent="UIParent" id="17"/>
+	<Frame name="MAMover18" inherits="MAMoverTemplate" parent="UIParent" id="18"/>
+	<Frame name="MAMover19" inherits="MAMoverTemplate" parent="UIParent" id="19"/>
+	<Frame name="MAMover20" inherits="MAMoverTemplate" parent="UIParent" id="20"/>
 
 	<Button name="MAButtonTemplate" inherits="UIPanelButtonTemplate" virtual="true">
 		<Size>
