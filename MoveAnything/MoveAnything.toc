@@ -1,13 +1,27 @@
 ## Interface: 30300
 ## Title: MoveAnything
-## Notes: |@Version: 8@|11.01 by Wagthaa
-## Version: 11.01
-## Author: Classic: Skrag - Mod: Jason - TBC: Vincent - WotLK & Cataclysm: Wagthaa @ Earthen Ring EU wagthaa@gmail.com
-## SavedVariables: MoveAnything_CustomFrames, MoveAnything_CharacterSettings, MoveAnything_UseCharacterSettings, MADB
+## Version: 18.0.8
+## Author: Wagthaa
+## Notes: |@Version: 9@|Move, scale, hide and adjust transparency of just about any screen element in the game.
+## SavedVariables: MADB
 
 localization.en.lua
 MoveAnything.lua
+Profile.lua
+API.lua
+FrameEditor.lua
+PortDialog.lua
+VirtualMovers.lua
+
+Modules\Alpha.lua
+Modules\Backdrop.lua
+Modules\Layers.lua
+Modules\Misc.lua
+Modules\Position.lua
+Modules\Scale.lua
+Modules\Visibility.lua
+
+FrameList.lua
+
 MoveAnything.xml
-MoveAnythingBlizzardOptions.xml
-MoveAnythingFrameEditor.lua
-MoveAnythingVirtualMovers.xml
+BlizzardOptions.xml

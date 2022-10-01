@@ -5,6 +5,9 @@
 	<Binding name="Move frame - Safe">
 		MovAny:SafeMoveFrameAtCursor()
 	</Binding>
+	<Binding name="Edit frame - Safe">
+		MovAny:SafeMAFEFrameAtCursor()
+	</Binding>
 	<Binding name="Hide frame - Safe">
 		MovAny:SafeHideFrameAtCursor()
 	</Binding>
@@ -14,13 +17,16 @@
 	<Binding name="Move frame - Exact">
 		MovAny:MoveFrameAtCursor()
 	</Binding>
+	<Binding name="Edit frame - Exact">
+		MovAny:MAFEFrameAtCursor()
+	</Binding>
 	<Binding name="Hide frame - Exact">
 		MovAny:HideFrameAtCursor()
 	</Binding>
 	<Binding name="Reset frame - Exact">
 		MovAny:ResetFrameAtCursor()
 	</Binding>
-	<Binding name="Update positions">
+	<Binding name="Synchronize all elements">
 		MovAny:SyncAllFrames()
 	</Binding>
 	<Binding name="Show frame info">

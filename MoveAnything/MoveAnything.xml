@@ -1,6 +1,132 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 ..\FrameXML\UI.xsd">
-	<Button name="GameMenuButtonMoveAnything" parent="GameMenuFrame" inherits="GameMenuButtonTemplate" text="MoveAnything!">
+	<Frame name="MovableBagFrame" virtual="true" enableMouse="false">
+		<Size>
+			<AbsDimension x="1" y="1"/>
+		</Size>
+		<Scripts>
+			<OnLoad>
+				self.OnMACreateVM = function(self)
+					self:ClearAllPoints()
+					self:SetPoint("BOTTOMRIGHT", "UIParent", "BOTTOMRIGHT", -90, 125)
+
+					self.realID = self:GetID()
+					if self:GetName() == "KeyRingFrame" then
+						self.realID = KEYRING_CONTAINER
+					end
+					if self.realID == KEYRING_CONTAINER then
+						self.size = GetKeyRingSize()
+					else
+						self.size = GetContainerNumSlots(self.realID)
+					end
+					MovAny:SetBag(self.realID, self)
+				end
+				self.OnMAHook = function(self)
+					if self.size == 0 and self.realID ~= KEYRING_CONTAINER then
+						self.size = GetContainerNumSlots(self.realID)
+					end
+					local conSettings = self.realID == 0 and MovAny.CONTAINER_FRAME_TABLE[0] or MovAny.CONTAINER_FRAME_TABLE[self.size ~= 0 and self.size or 20]
+					self:SetWidth(CONTAINER_WIDTH)
+					self:SetHeight(conSettings[4])
+					local container = MovAny:GetContainerFrame(self.realID)
+					if container then
+						self:SetWidth(container:GetWidth())
+						self:SetHeight(container:GetHeight())
+						container:SetParent(_G.UIParent)
+						self:ClearAllPoints()
+						self:SetPoint("BOTTOMLEFT", "UIParent", "BOTTOMLEFT", container:GetLeft(), container:GetBottom())
+						MovAny:GrabContainerFrame(container, self)
+						container.MAParent = self
+					end
+				end
+				local posFunc = function(self)
+					local container = MovAny:GetContainerFrame(self.realID)
+					if container then
+						MovAny:UnlockPoint(container)
+						container:ClearAllPoints()
+						container:SetPoint("CENTER", self, "CENTER", 0, 0)
+						MovAny:LockPoint(container)
+					end
+				end
+				self.OnMAPosition = posFunc
+				self.OnMAPreReset = posFunc
+
+				self.OnMAPostReset = function(self, readOnly)
+					local container = MovAny:GetContainerFrame(self.realID)
+					if container then
+						MovAny:UnlockPoint(container)
+						MovAny:UnlockScale(container)
+						container:ClearAllPoints()
+					end
+					if readOnly then
+						return
+					end
+					local mover = _G.BagsMover
+					if mover then
+						if mover.attachedChildren then
+							table.wipe(mover.attachedChildren)
+						end
+						mover:MAScanForChildren()
+						--mover:FoundChild(self.realID, self)
+					end
+					updateContainerFrameAnchors()
+				end
+
+				self.OnMAAttach = function(self)
+					local container = MovAny:GetContainerFrame(self.realID)
+					if container then
+						local mover = _G.BagsMover
+						if mover then
+							if mover.attachedChildren then
+								mover:ReleaseChildByName(container:GetName())
+							end
+						end
+						MovAny:UnlockPoint(container)
+						MovAny:UnlockScale(container)
+						if MovAny:IsModified(self, "scale") then
+							container:SetScale(self:GetScale())
+						else
+							container:SetScale(1)
+						end
+						MovAny:LockScale(container)
+					end
+					--updateContainerFrameAnchors()
+				end
+				self.OnMAPostAttach = function(self)
+					posFunc(self)
+					--[[local mover = _G.BagsMover
+					if mover then
+						if mover.attachedChildren then
+							table.wipe(mover.attachedChildren)
+						end
+						mover:MAScanForChildren()
+					end]]
+					updateContainerFrameAnchors()
+				end
+
+				self.OnMAAlpha = function(ref, alpha)
+					local con = MovAny:GetContainerFrame(ref.realID)
+					if con then
+						con:SetAlpha(alpha)
+					end
+				end
+
+				self.OnMAScale = function(ref, scale)
+					if scale and scale >= 0 then
+						local con = MovAny:GetContainerFrame(ref.realID)
+						if con then
+							MovAny:UnlockScale(con)
+							con:SetScale(scale)
+							MovAny:LockScale(con)
+							posFunc(ref)
+						end
+					end
+				end
+			</OnLoad>
+		</Scripts>
+	</Frame>
+
+	<Button name="GameMenuButtonMoveAnything" parent="GameMenuFrame" inherits="GameMenuButtonTemplate" text="MoveAnything">
 		<Scripts>
 			<OnLoad>
 				self:ClearAllPoints()
@@ -26,24 +152,28 @@
 				<AbsValue val="4"/>
 			</EdgeSize>
 			<TileSize>
-				<AbsValue val="8"/>
+				<AbsValue val="4"/>
 			</TileSize>
 			<BackgroundInsets>
-				<AbsInset left="2" right="2" top="2" bottom="2"/>
+				<AbsInset left="1" right="1" top="1" bottom="1"/>
 			</BackgroundInsets>
 		</Backdrop>
 		<Scripts>
 			<OnLoad>
+				self:SetBackdropColor(0, 0, 0, 1)
+				self:SetBackdropBorderColor(.8, .8, .8, 1)
+
 				local anchorto, anchor = MovAny:SizingAnchor(self)
-				self:SetPoint(anchor, self:GetParent(), anchorto, 0, 0)
+				self:ClearAllPoints()
+				self:SetPoint(anchor)
 			</OnLoad>
 			<OnShow>
-				self:SetFrameLevel(self:GetParent():GetFrameLevel()+2)
+				self:SetFrameLevel(self:GetParent():GetFrameLevel() + 2)
 			</OnShow>
 			<OnMouseDown>
 				local button = GetMouseButtonClicked()
 				if button == "RightButton" then
-					local t = _G[ self:GetParent():GetName().."Backdrop" ]
+					local t = _G[self:GetParent():GetName().."Backdrop"]
 					if IsShiftKeyDown() then
 						if t:IsVisible() then
 							t:Hide()
@@ -51,6 +181,7 @@
 							t:Show()
 						end
 					else
+						self:GetParent():SetMovable(true)
 						self:GetParent():StartMoving()
 					end
 				else
@@ -83,36 +214,32 @@
 		<Size>
 			<AbsDimension x="100" y="100"/>
 		</Size>
+		<Anchors>
+			<Anchor point="BOTTOMLEFT">
+				<Offset>
+					<AbsDimension x="0" y="0"/>
+				</Offset>
+			</Anchor>
+		</Anchors>
 		<ResizeBounds>
 			<minResize>
 				<AbsDimension x="8" y="8"/>
 			</minResize>
 		</ResizeBounds>
-		<Anchors>
-			<Anchor point="BOTTOMLEFT"/>
-		</Anchors>
 		<Scripts>
-			<!-- uncomment this to enable tooltips on movers
-			<OnEnter>
-				if  (MADB.tooltips and not IsShiftKeyDown()) or (not MADB.tooltips and IsShiftKeyDown()) then
-					self.tooltipLines = MovAny:GetFrameTooltipLines(self.tagged:GetName())
-					MovAny:TooltipShowMultiline(self)
-					self.tooltipLines = nil
-				end
-			</OnEnter>
-			-->
 			<OnLoad>
-				_G[ self:GetName().."Backdrop" ]:SetBackdropColor(1,1,1,.25)
-				_G[ self:GetName().."Backdrop" ]:SetBackdropBorderColor(1,1,1,.15)
+				self.neverShowTooltip = true
+				_G[ self:GetName().."Backdrop" ]:SetBackdropColor(.8, .8, .8, .7)
+				_G[ self:GetName().."Backdrop" ]:SetBackdropBorderColor(1, 1, 1, 1)
 			</OnLoad>
 			<OnUpdate>
-				if self.tagged and self.infoShown then
+				if self.tagged and self.infoShown and self.moving then
 					local f = self.tagged
-					local str = numfor(f:GetLeft()).." , "..numfor(f:GetBottom())
+					local str = MANumFor(f:GetLeft()).." , "..MANumFor(f:GetBottom())
 					local label = _G[self:GetName().."BackdropInfoLabel"]
 					label:Show()
 					label:SetText(str)
-					
+
 					if self == MovAny.currentMover then
 						_G["MANudgerInfoLabel"]:Show()
 						_G["MANudgerInfoLabel"]:SetText(str)
@@ -121,55 +248,66 @@
 			</OnUpdate>
 			<OnMouseDown>
 				local button = GetMouseButtonClicked()
-				if self.tagged then
-					local f = self.tagged
-					if not MovAny:IsProtected(f) or not InCombatLockdown() then
-						MovAny:UnlockPoint(f)
-						f:ClearAllPoints()
-						f:SetPoint("BOTTOMLEFT", self, "BOTTOMLEFT", 0, 0)
-						MovAny:LockPoint(f)
-					end
-					if button == "LeftButton" and not MovAny.NoMove[ self.tagged:GetName() ] then
-						local str = numfor(f:GetLeft()).." , "..numfor(f:GetBottom())
-						_G[self:GetName().."BackdropInfoLabel"]:SetText(str)
-						if self == MovAny.currentMover then
-							_G["MANudgerInfoLabel"]:SetText(str)
-							_G["MANudgerInfoLabel"]:Show()
+					if self.tagged then
+						if not IsControlKeyDown() then
+						local f = self.tagged
+						self.moving = true
+						if not self.MAE.noMove then
+							if not MovAny:IsProtected(f) or not InCombatLockdown() then
+								MovAny:UnlockPoint(f)
+								f:ClearAllPoints()
+								if f.MASetPoint then
+									f:MASetPoint("BOTTOMLEFT", self, "BOTTOMLEFT", 0, 0)
+								else
+									f:SetPoint("BOTTOMLEFT", self, "BOTTOMLEFT", 0, 0)
+								end
+								MovAny:LockPoint(f)
+							end
+							if button == "LeftButton" then
+								local str = MANumFor(f:GetLeft()).." , "..MANumFor(f:GetBottom())
+								_G[self:GetName().."BackdropInfoLabel"]:SetText(str)
+								if self == MovAny.currentMover then
+									_G["MANudgerInfoLabel"]:SetText(str)
+									_G["MANudgerInfoLabel"]:Show()
+								end
+								self.infoShown = true
+								if f.OnMAPosition then
+									f:OnMAPosition()
+								end
+							end
 						end
-						self.infoShown = true
-						if f.OnMAPosition then
-							f:OnMAPosition(f)
+						if button == "LeftButton" then
+							self:SetMovable(true)
+							self:StartMoving()
 						end
-						self:StartMoving()
 					end
 				end
 			</OnMouseDown>
 			<OnMouseUp>
+				self.moving = nil
 				local button = GetMouseButtonClicked()
-				if self.tagged and not MovAny.NoMove[ self.tagged:GetName() ] then
-					if button ~= "RightButton" then
+				if self.tagged then
+					if not self.MAE.noMove then
 						MovAny:MoverUpdatePosition(self)
 					end
 					self:StopMovingOrSizing()
 				end
-				if button == "RightButton" and self.tagged and not MovAny:ErrorNotInCombat(self.tagged) then
-					if IsShiftKeyDown() then
-						local t = _G[self:GetName().."Backdrop"]
-						if t:IsVisible() then
-							t:Hide()
+				if IsControlKeyDown() then
+					MovAny:FrameEditor(self.tagged:GetName())
+				else
+					if button == "RightButton" and self.tagged and not MovAny:ErrorNotInCombat(self.tagged) then
+						if IsShiftKeyDown() then
+							local t = _G[self:GetName().."Backdrop"]
+							if t:IsVisible() then
+								t:Hide()
+							else
+								t:Show()
+							end
 						else
-							t:Show()
-						end
-					else
-						local name = self.tagged:GetName()
-						if IsControlKeyDown() then
-							MovAny:FrameEditor(name)
-						else
-							MovAny:StopMoving(name)
+							MovAny:StopMoving(self.tagged:GetName())
 						end
 					end
 				end
-				--MovAny:TooltipHide()
 			</OnMouseUp>
 			<OnMouseWheel function="MAMoverTemplate_OnMouseWheel"/>
 			<OnSizeChanged>
@@ -184,6 +322,17 @@
 					_G[ "MANudgerInfoLabel"]:Hide()
 				end
 			</OnHide>
+			<OnEnter>
+				if self.tagged then
+					if self.alwaysShowTooltip or (self.neverShowTooltip and IsShiftKeyDown()) or (MADB.tooltips and not IsShiftKeyDown() and not self.neverShowTooltip) or (not MADB.tooltips and IsShiftKeyDown()) then
+						self.tooltipLines = MovAny:GetFrameTooltipLines(self.tagged:GetName())
+						MovAny:TooltipShowMultiline(self)
+					end
+				end
+			</OnEnter>
+			<OnLeave>
+				GameTooltip:Hide()
+			</OnLeave>
 		</Scripts>
 		<Frames>
 			<Frame name="$parentBackdrop" setAllPoints="true" enableMouse="false">
@@ -221,26 +370,6 @@
 			<Button name="$parentResize_RIGHT" inherits="MAResizeButton"/>
 		</Frames>
 	</Frame>
-	<Frame name="MAMover1" inherits="MAMoverTemplate" parent="UIParent" id="1"/>
-	<Frame name="MAMover2" inherits="MAMoverTemplate" parent="UIParent" id="2"/>
-	<Frame name="MAMover3" inherits="MAMoverTemplate" parent="UIParent" id="3"/>
-	<Frame name="MAMover4" inherits="MAMoverTemplate" parent="UIParent" id="4"/>
-	<Frame name="MAMover5" inherits="MAMoverTemplate" parent="UIParent" id="5"/>
-	<Frame name="MAMover6" inherits="MAMoverTemplate" parent="UIParent" id="6"/>
-	<Frame name="MAMover7" inherits="MAMoverTemplate" parent="UIParent" id="7"/>
-	<Frame name="MAMover8" inherits="MAMoverTemplate" parent="UIParent" id="8"/>
-	<Frame name="MAMover9" inherits="MAMoverTemplate" parent="UIParent" id="9"/>
-	<Frame name="MAMover10" inherits="MAMoverTemplate" parent="UIParent" id="10"/>
-	<Frame name="MAMover11" inherits="MAMoverTemplate" parent="UIParent" id="11"/>
-	<Frame name="MAMover12" inherits="MAMoverTemplate" parent="UIParent" id="12"/>
-	<Frame name="MAMover13" inherits="MAMoverTemplate" parent="UIParent" id="13"/>
-	<Frame name="MAMover14" inherits="MAMoverTemplate" parent="UIParent" id="14"/>
-	<Frame name="MAMover15" inherits="MAMoverTemplate" parent="UIParent" id="15"/>
-	<Frame name="MAMover16" inherits="MAMoverTemplate" parent="UIParent" id="16"/>
-	<Frame name="MAMover17" inherits="MAMoverTemplate" parent="UIParent" id="17"/>
-	<Frame name="MAMover18" inherits="MAMoverTemplate" parent="UIParent" id="18"/>
-	<Frame name="MAMover19" inherits="MAMoverTemplate" parent="UIParent" id="19"/>
-	<Frame name="MAMover20" inherits="MAMoverTemplate" parent="UIParent" id="20"/>
 
 	<Button name="MAButtonTemplate" inherits="UIPanelButtonTemplate" virtual="true">
 		<Size>
@@ -388,14 +517,18 @@
 		</Frames>
 	</Frame>
 
-	<Frame name="MAOptions" toplevel="true" frameStrata="DIALOG" movable="true" enableMouse="true" hidden="true" parent="UIParent">
-		<TitleRegion setAllPoints="true"/>
+	<Frame name="MAOptions" toplevel="true" frameStrata="HIGH" movable="true" enableMouse="true" hidden="true" parent="UIParent">
 		<Size>
 			<AbsDimension x="497" y="513"/>
 		</Size>
 		<Anchors>
-			<Anchor point="CENTER"/>
+			<Anchor point="CENTER">
+				<Offset>
+					<AbsDimension x="0" y="0"/>
+				</Offset>
+			</Anchor>
 		</Anchors>
+		<TitleRegion setAllPoints="true"/>
 		<Backdrop bgFile="Interface\DialogFrame\UI-DialogBox-Background" edgeFile="Interface\DialogFrame\UI-DialogBox-Border" tile="true">
 			<BackgroundInsets>
 				<AbsInset left="11" right="12" top="12" bottom="11"/>
@@ -475,7 +608,7 @@
 				</Anchors>
 				<Scripts>
 					<OnLoad>
-						self.tooltipText = "Closes this window. Ctrl-Shift-Alt click reloads the interface"
+						self.tooltipText = "Closes this window\n\nCtrl-Shift-Alt click reloads the interface"
 					</OnLoad>
 					<OnClick>
 						if IsShiftKeyDown() and IsControlKeyDown() and IsAltKeyDown() then
@@ -498,10 +631,14 @@
 				</Anchors>
 				<Scripts>
 					<OnLoad>
-						self.tooltipText = "Open options"
+						self.tooltipText = "Toggle options"
 					</OnLoad>
 					<OnClick>
-						InterfaceOptionsFrame_OpenToCategory("MoveAnything")
+						if InterfaceOptionsFrame:IsVisible() and MoveAnythingOptions:IsVisible() then
+							HideUIPanel(InterfaceOptionsFrame)
+						else
+							InterfaceOptionsFrame_OpenToCategory("MoveAnything")
+						end
 					</OnClick>
 				</Scripts>
 			</Button>
@@ -516,7 +653,7 @@
 				</Anchors>
 				<Scripts>
 					<OnLoad>
-						self.tooltipText = "Synchronize elements modified by MoveAnything."
+						self.tooltipText = "Synchronize elements modified by MoveAnything"
 					</OnLoad>
 					<OnClick>
 						MovAny:SyncAllFrames()
@@ -524,47 +661,56 @@
 				</Scripts>
 			</Button>
 			
-			<CheckButton name="$parentToggleFrameStack" inherits="MACheckButtonTemplate">
+			<CheckButton name="$parentToggleFrameEditors" inherits="MACheckButtonTemplate">
 				<Size>
 					<AbsDimension x="20" y="20"/>
 				</Size>
 				<Anchors>
 					<Anchor point="TOPRIGHT" relativeTo="MAOptionsSync" relativePoint="TOPLEFT">
 						<Offset>
-							<AbsDimension x="-19" y="0"/>
-						</Offset>
-					</Anchor>
-				</Anchors>
-				<Scripts>
-					<OnLoad>
-						_G[self:GetName().."Text"]:SetText("FS")
-						self.tooltipText = "Toggle Blizzard's framestack tooltip.\n\n A very helpful tool for figuring out frame names for use with /move."
-					</OnLoad>
-					<OnClick>
-						UIParentLoadAddOn("Blizzard_DebugTools")
-						FrameStackTooltip_Toggle()
-					</OnClick>
-				</Scripts>
-			</CheckButton>
-			
-			<CheckButton name="$parentToggleFrameEditors" inherits="MACheckButtonTemplate">
-				<Size>
-					<AbsDimension x="20" y="20"/>
-				</Size>
-				<Anchors>
-					<Anchor point="TOPRIGHT" relativeTo="MAOptionsToggleFrameStack" relativePoint="TOPLEFT">
-						<Offset>
-							<AbsDimension x="-17" y="0"/>
+							<AbsDimension x="-15" y="0"/>
 						</Offset>
 					</Anchor>
 				</Anchors>
 				<Scripts>
 					<OnLoad>
 						_G[self:GetName().."Text"]:SetText("FE")
-						self.tooltipText = "Toggle visibility on frame editors."
+						self.tooltipText = "Toggle visibility on frame editors"
 					</OnLoad>
 					<OnClick>
-						MovAny:ToggleFrameEditors()
+						if IsShiftKeyDown() then
+							for i, fe in pairs(MovAny.frameEditors) do
+								fe:CloseDialog()
+							end
+						end
+						if MovAny.ToggleFrameEditors then
+							MovAny:ToggleFrameEditors()
+						end
+					</OnClick>
+				</Scripts>
+			</CheckButton>
+			
+			<CheckButton name="$parentToggleMovers" inherits="MACheckButtonTemplate" checked="true">
+				<Size>
+					<AbsDimension x="20" y="20"/>
+				</Size>
+				<Anchors>
+					<Anchor point="TOPRIGHT" relativeTo="MAOptionsToggleFrameEditors" relativePoint="TOPLEFT">
+						<Offset>
+							<AbsDimension x="-12" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						_G[self:GetName().."Text"]:SetText("M")
+						self.tooltipText = "Toggles all movers"
+					</OnLoad>
+					<OnClick>
+						if IsShiftKeyDown() then
+							table.wipe(MovAny.minimizedMovers)
+						end
+						MovAny:ToggleMovers()
 					</OnClick>
 				</Scripts>
 			</CheckButton>
@@ -613,6 +759,29 @@
 				</Scripts>
 			</CheckButton>
 			
+			<CheckButton name="$parentToggleFrameStack" inherits="MACheckButtonTemplate">
+				<Size>
+					<AbsDimension x="20" y="20"/>
+				</Size>
+				<Anchors>
+					<Anchor point="TOPLEFT" relativeTo="MAOptionsToggleCategories" relativePoint="TOPRIGHT">
+						<Offset>
+							<AbsDimension x="60" y="0"/>
+						</Offset>
+					</Anchor>
+				</Anchors>
+				<Scripts>
+					<OnLoad>
+						_G[self:GetName().."Text"]:SetText("FS")
+						self.tooltipText = "Toggle Blizzard's framestack tooltip\n\n A very helpful tool for finding frame names for use with /move or /hide"
+					</OnLoad>
+					<OnClick>
+						UIParentLoadAddOn("Blizzard_DebugTools")
+						FrameStackTooltip_Toggle()
+					</OnClick>
+				</Scripts>
+			</CheckButton>
+			
 			<EditBox name="MA_Search" inherits="InputBoxTemplate" hidden="false" virtual="true" autoFocus="false">
 				<Size>
 					<AbsDimension x="464" y="18"/>
@@ -628,8 +797,6 @@
 					<OnLoad>
 						self:SetText(MOVANY.SEARCH_TEXT)
 					</OnLoad>
-					<OnShow>
-					</OnShow>
 					<OnEditFocusGained>
 						self:HighlightText(0, 0)
 						if self:GetText() == MOVANY.SEARCH_TEXT then
@@ -717,10 +884,15 @@
 		</Frames>
 		<Scripts>
 			<OnLoad>
+				self:EnableMouse(true)
+				self:SetMovable(true)
+				self:RegisterForDrag("LeftButton")
 				self:RegisterEvent("ADDON_LOADED")
 				self:RegisterEvent("PLAYER_LOGOUT")
 				self:RegisterEvent("PLAYER_ENTERING_WORLD")
+				self:RegisterEvent("PLAYER_REGEN_DISABLED")
 				self:RegisterEvent("PLAYER_REGEN_ENABLED")
+				self:RegisterEvent("PARTY_MEMBERS_CHANGED")
 				self:RegisterEvent("RAID_ROSTER_UPDATE")
 				self:RegisterEvent("ACTIVE_TALENT_GROUP_CHANGED")
 				self:RegisterEvent("PLAYER_FOCUS_CHANGED")
@@ -735,13 +907,17 @@
 		</Scripts>
 	</Frame>
 	<Button name="MA_NudgeButton" inherits="UIPanelButtonTemplate" virtual="true" hidden="false">
-		<Size><AbsDimension x="24" y="24"/></Size>
+		<Size>
+			<AbsDimension x="24" y="24"/>
+		</Size>
 		<Scripts>
 			<OnClick function="MANudgeButton_OnClick"/>
 		</Scripts>
 	</Button>
 	<Button name="MA_MoverButton" inherits="UIPanelButtonTemplate" virtual="true" hidden="false">
-		<Size><AbsDimension x="15" y="15"/></Size>
+		<Size>
+			<AbsDimension x="15" y="15"/>
+		</Size>
 		<Scripts>
 			<OnLoad>
 				self:RegisterForClicks("LeftButtonUp", "RightButtonUp", "MiddleButtonUp")
@@ -945,7 +1121,7 @@
 						self:RegisterForClicks("LeftButtonUp", "RightButtonUp", "MiddleButtonUp")
 					</OnLoad>
 					<OnClick>
-						if MovAny.currentMover.tagged then
+						if MovAny.currentMover and MovAny.currentMover.tagged then
 							MovAny:ToggleHide(MovAny.currentMover.tagged:GetName())
 						end
 					</OnClick>
@@ -978,9 +1154,12 @@
 		</Frames>
 		<Scripts>
 			<OnLoad>
+				self:SetBackdropColor(0, 0, 0, .75)
+				self:SetBackdropBorderColor(0, 0, 0, .75)
+				self.neverShowTooltip = true
+				self:EnableMouse(true)
+				self:SetMovable(true)
 				self:RegisterForDrag("LeftButton")
-				self:SetBackdropColor(0,0,0,.75)
-				self:SetBackdropBorderColor(0,0,0,.75)
 				_G[ self:GetName().."InfoLabel"]:SetAlpha(.8)
 			</OnLoad>
 			<OnDragStart>
@@ -1010,7 +1189,7 @@
 			<OnMouseWheel function="MANudger_OnMouseWheel"/>
 			<OnEnter>
 				if MovAny.currentMover ~= nil and MovAny.currentMover.tagged then
-					if  (MADB.tooltips and not IsShiftKeyDown()) or (not MADB.tooltips and IsShiftKeyDown()) then
+					if self.alwaysShowTooltip or (self.neverShowTooltip and IsShiftKeyDown()) or (MADB.tooltips and not IsShiftKeyDown() and not self.neverShowTooltip) or (not MADB.tooltips and IsShiftKeyDown()) then
 						self.tooltipLines = MovAny:GetFrameTooltipLines(MovAny.currentMover.tagged:GetName())
 						MovAny:TooltipShowMultiline(self)
 					end
