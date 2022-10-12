@@ -2,13 +2,17 @@
 ..\FrameXML\UI.xsd">
 	<Frame name="MoveAnythingOptions" parent="UIParent">
 		<Scripts>
-			<OnLoad function="MovAny_OptionsOnLoad"/>
+			<OnLoad>
+				self.ListRowsFS:SetText()
+				self.ProfileFS:SetText(MOVANY.PROFILE)
+				MovAny_OptionsOnLoad(self)
+			</OnLoad>
 			<OnShow function="MovAny_OptionsOnShow"/>
 		</Scripts>
 		
 		<Layers>
 			<Layer level="BACKGROUND">
-				<FontString name="MAOptFrameListRows" inherits="GameFontNormal" text="List rows:">
+				<FontString name="MAOptFrameListRows" parentKey="ListRowsFS" inherits="GameFontNormal" text="List rows:">
 					<Anchors>
 						<Anchor point="TOPLEFT" relativeTo="MoveAnythingOptions" relativePoint="TOPLEFT">
 							<Offset>
@@ -17,7 +21,7 @@
 						</Anchor>
 					</Anchors>
 				</FontString>
-				<FontString name="MAOptProfile" inherits="GameFontNormal" text="Profile:">
+				<FontString name="MAOptProfile" parentKey="ProfileFS" inherits="GameFontNormal" text="Profile:">
 					<Anchors>
 						<Anchor point="TOPLEFT" relativeTo="MoveAnythingOptions" relativePoint="TOPLEFT">
 							<Offset>
@@ -121,7 +125,7 @@
 				<Scripts>
 					<OnLoad>
 						self.alwaysShowTooltip = true
-						self.tooltipText = "Save as"
+						self.tooltipText = MOVANY.SAVE_AS
 					</OnLoad>
 					<OnClick>
 						MovAny:ProfileSaveAsClicked(self)
@@ -143,7 +147,7 @@
 				<Scripts>
 					<OnLoad>
 						self.alwaysShowTooltip = true
-						self.tooltipText = "Add new"
+						self.tooltipText = MOVANY.ADD_NEW
 					</OnLoad>
 					<OnClick>
 						MovAny:ProfileAddClicked(self)
@@ -185,8 +189,8 @@
 				<Scripts>
 					<OnLoad>
 						self.alwaysShowTooltip = true
-						self.tooltipText = "Enable to show the nudger with the main window\n\nBy default the Nudger is only shown when interacting with frames."
-						_G[self:GetName().."Text"]:SetText("Show Nudger with main window")
+						self.tooltipText = MOVANY.ENABLE_NUDGER
+						_G[self:GetName().."Text"]:SetText(MOVANY.SHOW_NUDGER)
 					</OnLoad>
 					<OnClick>
 						local reshowGUI = nil
@@ -213,8 +217,8 @@
 				<Scripts>
 					<OnLoad>
 						self.alwaysShowTooltip = true
-						self.tooltipText = "Toggles display of tooltips on/off\n\nPressing Shift when mousing over elements will reverse tooltip display behavior."
-						_G[self:GetName().."Text"]:SetText("Show tooltips")
+						self.tooltipText = MOVANY.SHOW_TOOLTIPS_DESC
+						_G[self:GetName().."Text"]:SetText(MOVANY.SHOW_TOOLTIPS)
 					</OnLoad>
 					<OnClick>
 						MovAny:OptionCheckboxChecked(self, "tooltips")
@@ -233,8 +237,8 @@
 				<Scripts>
 					<OnLoad>
 						self.alwaysShowTooltip = true
-						self.tooltipText = "Toggles if MoveAnything should play a sound when opening and closing the main window."
-						_G[self:GetName().."Text"]:SetText("Play sound")
+						self.tooltipText = MOVANY.PLAY_SOUND_DESC
+						_G[self:GetName().."Text"]:SetText(MOVANY.PLAY_SOUND)
 					</OnLoad>
 					<OnClick>
 						MovAny:OptionCheckboxChecked(self, "playSound")
@@ -252,7 +256,7 @@
 				</Anchors>
 				<Scripts>
 					<OnLoad>
-						_G[self:GetName().."Text"]:SetText("Escape key closes main window")
+						_G[self:GetName().."Text"]:SetText(MOVANY.ESCAPE_KEY_DESC)
 					</OnLoad>
 					<OnClick>
 						MovAny:OptionCheckboxChecked(self, "closeGUIOnEscape")
@@ -271,8 +275,8 @@
 				<Scripts>
 					<OnLoad>
 						self.alwaysShowTooltip = true
-						self.tooltipText = "Disables searching of actual frame names."
-						_G[self:GetName().."Text"]:SetText("Dont search frame names")
+						self.tooltipText = MOVANY.DONT_SEARCH_FRAME_NAMES_DESC
+						_G[self:GetName().."Text"]:SetText(MOVANY.DONT_SEARCH_FRAME_NAMES)
 					</OnLoad>
 					<OnClick>
 						MovAny:OptionCheckboxChecked(self, "dontSearchFrameNames")
@@ -291,8 +295,8 @@
 				<Scripts>
 					<OnLoad>
 						self.alwaysShowTooltip = true
-						self.tooltipText = "Toggles if MoveAnything will hook containers.\n\nThis should be checked if you use another addon to move your bags."
-						_G[self:GetName().."Text"]:SetText("Disable bag container hook")
+						self.tooltipText = MOVANY.DISABLE_CONTAINER_HOOK_DESC
+						_G[self:GetName().."Text"]:SetText(MOVANY.DISABLE_CONTAINER_HOOK)
 					</OnLoad>
 					<OnClick>
 						MovAny:OptionCheckboxChecked(self, "noBags")
@@ -311,8 +315,8 @@
 				<Scripts>
 					<OnLoad>
 						self.alwaysShowTooltip = true
-						self.tooltipText = "Toggles if MoveAnything will hook CreateFrame.\n\nRequires reload to take effect."
-						_G[self:GetName().."Text"]:SetText("Disable frame creation hook")
+						self.tooltipText = MOVANY.DISABLE_FRAME_HOOK_DESC
+						_G[self:GetName().."Text"]:SetText(MOVANY.DISABLE_FRAME_HOOK)
 					</OnLoad>
 					<OnClick>
 						MovAny:OptionCheckboxChecked(self, "dontHookCreateFrame")
@@ -331,8 +335,8 @@
 				<Scripts>
 					<OnLoad>
 						self.alwaysShowTooltip = true
-						self.tooltipText = "Toggles if MoveAnything will synchronize pending frames when leaving combat.\n\nDisabling this may result in protected frames requiring a manual sync when leaving combat."
-						_G[self:GetName().."Text"]:SetText("Disable sync when leaving combat")
+						self.tooltipText = MOVANY.DISABLE_OOC_SYNC_DESC
+						_G[self:GetName().."Text"]:SetText(MOVANY.DISABLE_OOC_SYNC)
 					</OnLoad>
 					<OnClick>
 						MovAny:OptionCheckboxChecked(self, "dontSyncWhenLeavingCombat")
@@ -351,8 +355,8 @@
 				<Scripts>
 					<OnLoad>
 						self.alwaysShowTooltip = true
-						self.tooltipText = "Toggles square MiniMap on/off.\n\nHide \"Round Border\" in the \"Minimap\" category to get rid of the overlaying border."
-						_G[self:GetName().."Text"]:SetText("Enable square Minimap")
+						self.tooltipText = MOVANY.ENABLE_SQUARE_MINIMAP_DESC
+						_G[self:GetName().."Text"]:SetText(MOVANY.ENABLE_SQUARE_MINIMAP)
 					</OnLoad>
 					<OnClick>
 						MovAny:OptionCheckboxChecked(self, "squareMM")
@@ -371,8 +375,8 @@
 				<Scripts>
 					<OnLoad>
 						self.alwaysShowTooltip = true
-						self.tooltipText = "Toggles Minimap mousewheel zoom on/off.\n\nRequires reload to take effect."
-						_G[self:GetName().."Text"]:SetText("Disable Minimap mousewheel zoom")
+						self.tooltipText = MOVANY.DISABLE_MINIMAP_MOUSEWHEEL_ZOOM_DESC
+						_G[self:GetName().."Text"]:SetText(MOVANY.DISABLE_MINIMAP_MOUSEWHEEL_ZOOM)
 					</OnLoad>
 					<OnClick>
 						MovAny:OptionCheckboxChecked(self, "noMMMW")
@@ -391,8 +395,8 @@
 				<Scripts>
 					<OnLoad>
 						self.alwaysShowTooltip = true
-						self.tooltipText = "Toggles printing of error messages on/off."
-						_G[self:GetName().."Text"]:SetText("Disable error messages")
+						self.tooltipText = MOVANY.DISABLE_ERROR_MESSAGES_DESC
+						_G[self:GetName().."Text"]:SetText(MOVANY.DISABLE_ERROR_MESSAGES)
 					</OnLoad>
 					<OnClick>
 						MovAny:OptionCheckboxChecked(self, "disableErrorMessages")
@@ -400,7 +404,7 @@
 				</Scripts>
 			</CheckButton>
 			
-			<Button name="MAOptResetProfile" inherits="MAButtonTemplate" text="Reset Profile">
+			<Button name="MAOptResetProfile" inherits="MAButtonTemplate">
 				<Size>
 					<AbsDimension x="120" y="22"/>
 				</Size>
@@ -413,7 +417,8 @@
 				</Anchors>
 				<Scripts>
 					<OnLoad>
-						self.tooltipText = "Reset profile\n\nResets the profile, deleting all stored frame settings for this profile."
+						self:SetText(MOVANY.RESET_PROFILE)
+						self.tooltipText = MOVANY.RESET_PROFILE_DESC
 						self.alwaysShowTooltip = true
 					</OnLoad>
 					<OnEnter function="MovAny_TooltipShow"/>
@@ -427,7 +432,7 @@
 				</Scripts>
 			</Button>
 			
-			<Button name="MAOptExportProfile" inherits="MAButtonTemplate" text="Export Profile">
+			<Button name="MAOptExportProfile" inherits="MAButtonTemplate">
 				<Size>
 					<AbsDimension x="120" y="22"/>
 				</Size>
@@ -440,6 +445,7 @@
 				</Anchors>
 				<Scripts>
 					<OnLoad>
+						self:SetText(MOVANY.EXPORT_PROFILE)
 						--self.tooltipText = ""
 						--self.alwaysShowTooltip = true
 					</OnLoad>
@@ -454,7 +460,7 @@
 				</Scripts>
 			</Button>
 			
-			<Button name="MAOptImportProfile" inherits="MAButtonTemplate" text="Import Profile">
+			<Button name="MAOptImportProfile" inherits="MAButtonTemplate">
 				<Size>
 					<AbsDimension x="120" y="22"/>
 				</Size>
@@ -467,6 +473,7 @@
 				</Anchors>
 				<Scripts>
 					<OnLoad>
+						self:SetText(MOVANY.IMPORT_PROFILE)
 						--self.tooltipText = ""
 						--self.alwaysShowTooltip = true
 					</OnLoad>
@@ -481,7 +488,7 @@
 				</Scripts>
 			</Button>
 
-			<Button name="MAOptResetAll" inherits="MAButtonTemplate" text="Reset All">
+			<Button name="MAOptResetAll" inherits="MAButtonTemplate">
 				<Size>
 					<AbsDimension x="120" y="22"/>
 				</Size>
@@ -494,7 +501,8 @@
 				</Anchors>
 				<Scripts>
 					<OnLoad>
-						self.tooltipText = "Reset all\n\nReset MoveAnything to default settings. Deletes all frame settings, as well as the custom frame list"
+						self:SetText(MOVANY.RESET_ALL_PROFILE)
+						self.tooltipText = MOVANY.RESET_ALL_PROFILE_DESC
 						self.alwaysShowTooltip = true
 					</OnLoad>
 					<OnEnter function="MovAny_TooltipShow"/>

@@ -5112,7 +5112,7 @@ function MovAny_OptionsOnLoad(f)
 end
 
 function MovAny_OptionsOnShow()
-	MAOptVersion:SetText("Version: |cffeeeeee"..GetAddOnMetadata("MoveAnything", "Version").."|r")
+	MAOptVersion:SetFormattedText(MOVANY.VERSION, GetAddOnMetadata("MoveAnything", "Version"))
 	MAOptAlwaysShowNudger:SetChecked(MADB.alwaysShowNudger)
 	MAOptNoBags:SetChecked(MADB.noBags)
 	MAOptPlaySound:SetChecked(MADB.playSound)
@@ -5176,7 +5176,7 @@ function MovAny.ProfileDropDownInit()
 	local sel = MovAny:GetProfileName()
 	local info
 	info = UIDropDownMenu_CreateInfo()
-	info.text = "default"
+	info.text = MOVANY.PROFILE_DEFAULT
 	info.value = "default"
 	info.func = MovAny.ProfileDropDownClicked
 	if "default" == sel then
