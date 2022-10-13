@@ -496,7 +496,7 @@
 					</OnClick>
 				</Scripts>
 			</CheckButton>
-			<Button name="$parentReset" inherits="UIPanelButtonTemplate" text="Reset">
+			<Button name="$parentReset" inherits="UIPanelButtonTemplate">
 				<Size>
 					<AbsDimension x="44" y="20"/>
 				</Size>
@@ -509,6 +509,9 @@
 				</Anchors>
 				<NormalText inherits="GameFontHighlight"/>
 				<Scripts>
+					<OnLoad>
+						self:SetText(MOVANY.RESET)
+					</OnLoad>
 					<OnClick>
 						MovAny:OnResetCheck(self)
 					</OnClick>
@@ -608,7 +611,7 @@
 				</Anchors>
 				<Scripts>
 					<OnLoad>
-						self.tooltipText = "Closes this window\n\nCtrl-Shift-Alt click reloads the interface"
+						self.tooltipText = MOVANY.CLOSE_WINDOW_DESC
 					</OnLoad>
 					<OnClick>
 						if IsShiftKeyDown() and IsControlKeyDown() and IsAltKeyDown() then
@@ -631,7 +634,7 @@
 				</Anchors>
 				<Scripts>
 					<OnLoad>
-						self.tooltipText = "Toggle options"
+						self.tooltipText = MOVANY.TOGGLE_OPTIONS
 					</OnLoad>
 					<OnClick>
 						if InterfaceOptionsFrame:IsVisible() and MoveAnythingOptions:IsVisible() then
@@ -653,7 +656,7 @@
 				</Anchors>
 				<Scripts>
 					<OnLoad>
-						self.tooltipText = "Synchronize elements modified by MoveAnything"
+						self.tooltipText = MOVANY.SYNC_ELEMENTS
 					</OnLoad>
 					<OnClick>
 						MovAny:SyncAllFrames()
@@ -675,7 +678,7 @@
 				<Scripts>
 					<OnLoad>
 						_G[self:GetName().."Text"]:SetText("FE")
-						self.tooltipText = "Toggle visibility on frame editors"
+						self.tooltipText = MOVANY.TOGGLE_VISIBILITY
 					</OnLoad>
 					<OnClick>
 						if IsShiftKeyDown() then
@@ -704,7 +707,7 @@
 				<Scripts>
 					<OnLoad>
 						_G[self:GetName().."Text"]:SetText("M")
-						self.tooltipText = "Toggles all movers"
+						self.tooltipText = MOVANY.TOGGLE_ALL
 					</OnLoad>
 					<OnClick>
 						if IsShiftKeyDown() then
@@ -729,7 +732,7 @@
 				<Scripts>
 					<OnLoad>
 						_G[self:GetName().."Text"]:SetText("MF")
-						self.tooltipText = "Show only modified frames"
+						self.tooltipText = MOVANY.SHOW_ONLY_MODIFIED
 					</OnLoad>
 					<OnClick>
 						MovAny:OnCheckToggleModifiedFramesOnly(self)
@@ -751,7 +754,7 @@
 				<Scripts>
 					<OnLoad>
 						_G[self:GetName().."Text"]:SetText("CE")
-						self.tooltipText = "Toggle all categories"
+						self.tooltipText = MOVANY.TOGGLE_ALL_CATS
 					</OnLoad>
 					<OnClick>
 						MovAny:OnCheckToggleCategories(self)
@@ -773,7 +776,7 @@
 				<Scripts>
 					<OnLoad>
 						_G[self:GetName().."Text"]:SetText("FS")
-						self.tooltipText = "Toggle Blizzard's framestack tooltip\n\n A very helpful tool for finding frame names for use with /move or /hide"
+						self.tooltipText = MOVANY.TOGGLE_FSTACK
 					</OnLoad>
 					<OnClick>
 						UIParentLoadAddOn("Blizzard_DebugTools")

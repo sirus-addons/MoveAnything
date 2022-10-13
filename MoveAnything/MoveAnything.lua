@@ -4680,14 +4680,14 @@ function MovAny:GetFrameTooltipLines(fn)
 	end
 	if o and o.displayName and o.displayName ~= fn and fn ~= nil then
 		tinsert(msgs, " ")
-		tinsert(msgs, "Frame: "..fn)
+		tinsert(msgs, MOVANY.FRAME_STR..fn)
 	end
 	if opts then
 		if opts.pos then
 			if not added then
 				tinsert(msgs, " ")
 			end
-			tinsert(msgs, "Position: "..MANumFor(opts.pos[4])..", "..MANumFor(opts.pos[5]))
+			tinsert(msgs, MOVANY.POSITION_STR..MANumFor(opts.pos[4])..", "..MANumFor(opts.pos[5]))
 			enough = true
 			added = true
 		end
