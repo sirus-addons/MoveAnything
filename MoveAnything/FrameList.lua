@@ -54,7 +54,7 @@ local m = {
 		API:AddElement({name = "AchievementAlertFrame1", displayName = "Achievement Alert 1", runOnce = AchievementFrame_LoadUI, create = "AchievementAlertFrameTemplate"}, c)
 		API:AddElement({name = "AchievementAlertFrame2", displayName = "Achievement Alert 2", runOnce = AchievementFrame_LoadUI, create = "AchievementAlertFrameTemplate"}, c)
 --		local gcaf = API:AddElement({name = "GuildChallengeAlertFrame", displayName = "Guild Challenge Achievement Alert"}, c)
-		API:AddElement({name = "WatchFrame", displayName = "Objectives Window", scaleWH = 1}, c)
+		API:AddElement({name = "WatchFrameMover", displayName = "Objectives Window", scaleWH = 1}, c)
 		local qldf = API:AddElement({name = "QuestLogDetailFrame", displayName = "Quest Details", runOnce = function()
 			if not QuestLogDetailFrame:IsShown() then
 				ShowUIPanel(QuestLogDetailFrame)

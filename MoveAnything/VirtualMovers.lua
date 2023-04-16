@@ -95,9 +95,9 @@ MovAny.lVirtualMovers = {
 		end
 	},
 	WatchFrameMover = {
-		w = 200,
-		h = 450,
-		point = {"TOPRIGHT", "MinimapCluster", "BOTTOMRIGHT", 0, 0},
+		w = 235,
+		h = 700,
+		point = {"TOPRIGHT", "MinimapCluster", "BOTTOMRIGHT", -10, 0},
 		OnMAHook = function(self)
 			local b = WatchFrame
 			MovAny:UnlockPoint(b)
@@ -114,9 +114,12 @@ MovAny.lVirtualMovers = {
 		OnMAPostReset = function(self)
 			local b = WatchFrame
 			MovAny:UnlockPoint(b)
-			b:SetPoint("TOPRIGHT", "MinimapCluster", "BOTTOMRIGHT", 0, 0)
-			b:SetHeight(700)
+			b:ClearAllPoints()
+			b:SetPoint("TOPRIGHT", "MinimapCluster", "BOTTOMRIGHT", -10, 0)
+		--	b:SetHeight(700)
+			WatchFrame_SetWidth(GetCVar("watchFrameWidth"))
 			_G["InterfaceOptionsObjectivesPanelWatchFrameWidth"]:SetEnabled(true)
+			UIParent_ManageFramePositions()
 		end,
 		OnMAScale = function(self)
 			local b = WatchFrame

@@ -2,11 +2,12 @@
 ## Title: MoveAnything
 ## Version: 18.0.8
 ## Author: Wagthaa
-## Notes: |@Version: 10@|Move, scale, hide and adjust transparency of just about any screen element in the game.
+## Notes: |@Version: 11@|Move, scale, hide and adjust transparency of just about any screen element in the game.
 ## SavedVariables: MADB
 
-localization.ru.lua
-localization.en.lua
+Localizations\Localization.en.lua
+Localizations\Localization.ru.lua
+
 MoveAnything.lua
 Profile.lua
 API.lua

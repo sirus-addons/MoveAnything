@@ -338,6 +338,7 @@ local MovAny = {
 		VehicleMenuBarPowerBar = "VehicleMenuBarPowerBar",
 		--ArenaEnemyFrames = "ArenaEnemyFrames",
 		MinimapCluster = "MinimapCluster",
+		WatchFrameMover = "WatchFrameMover",
 	},
 	NoUnanchoring = {
 		BuffFrame = "BuffFrame",
