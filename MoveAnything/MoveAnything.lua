@@ -46,6 +46,9 @@ local UIParent = UIParent
 local MOVANY = _G.MOVANY
 local MAOptions
 
+local DBG_MAX_CHILDREN = 1000
+local DBG_NUM_CHILDREN
+
 function MA_tdeepcopy(object)
 	local lookup_table = {}
 	local function _copy(object)
@@ -1018,6 +1021,13 @@ function MovAny.SyncErrorHandler(msg, frame, stack,  ...)
 					funcs = funcs..", "..m
 				end
 			end
+		end
+		if DBG_NUM_CHILDREN then
+			msg = string.format("%s [%d]", msg, DBG_NUM_CHILDREN)
+			if DBG_MAX_CHILDREN >= 200 then
+				DBG_MAX_CHILDREN = DBG_MAX_CHILDREN - 100
+			end
+			DBG_NUM_CHILDREN = nil
 		end
 		maPrint(string.format(MOVANY.ERROR_FRAME_FAILED, e.name, e.name, GetAddOnMetadata("MoveAnything", "Version"), msg, funcs))
 	end
@@ -3933,7 +3943,9 @@ function MovAny:UnanchorRelatives(e, f, opt)
 		end
 	end
 
-	if p.GetChildren then
+
+	if p.GetChildren and p:GetNumChildren() <= DBG_MAX_CHILDREN then
+		DBG_NUM_CHILDREN = p:GetNumChildren()
 		local children = {p:GetChildren()}
 		if children ~= nil then
 			for i, v in ipairs(children) do
@@ -3942,6 +3954,7 @@ function MovAny:UnanchorRelatives(e, f, opt)
 				end
 			end
 		end
+		DBG_NUM_CHILDREN = nil
 	end
 
 	relatives[f] = nil
