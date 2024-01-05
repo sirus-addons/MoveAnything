@@ -755,13 +755,10 @@ MovAny.lVirtualMovers = {
 		end,
 		OnMAHide = function(self, hidden)
 			if hidden then
-				for i = 1, 10 do
-				--local frame = _G["PetActionButton"..i]
-					HidenFrame.frameinfo["PetActionBarFrame"] = PetActionBarFrame:GetParent()
-					PetActionBarFrame:SetParent("HidenFrame")
-					PetActionBarFrame:Hide()
-					PetActionBarFrame:UnregisterAllEvents()
-				end
+				HidenFrame.frameinfo["PetActionBarFrame"] = PetActionBarFrame:GetParent()
+				PetActionBarFrame:SetParent("HidenFrame")
+				PetActionBarFrame:Hide()
+				PetActionBarFrame:UnregisterAllEvents()
 			else
 				if HidenFrame.frameinfo["PetActionBarFrame"] then
 					PetActionBarFrame:SetParent(HidenFrame.frameinfo["PetActionBarFrame"])

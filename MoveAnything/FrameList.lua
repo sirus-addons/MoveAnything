@@ -144,6 +144,8 @@ local m = {
 		API:AddElement({name = "ActionBarDownButton", displayName = "Action Bar Page Down"}, c)
 		API:AddElement({name = "PetActionButtonsMover", displayName = "Pet Action Bar"}, c)
 		API:AddElement({name = "PetActionButtonsVerticalMover", displayName = "Pet Action Bar - Vertical"}, c)
+		API:AddElement({name = "SlidingActionBarTexture0", displayName = "Pet Action Bar Texture 0"}, c)
+		API:AddElement({name = "SlidingActionBarTexture1", displayName = "Pet Action Bar Texture 1"}, c)
 		API:AddElement({name = "ShapeshiftButtonsMover", displayName = "Stance / Aura / Shapeshift Buttons", onlyOnceCreated = nil}, c)
 		API:AddElement({name = "ShapeshiftButtonsVerticalMover", displayName = "Stance / Aura / Shapeshift - Vertical", onlyOnceCreated = nil}, c)
 
