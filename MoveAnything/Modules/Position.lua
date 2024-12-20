@@ -38,16 +38,16 @@ local m = {
 					end
 				end
 			end
-			
+
 			local fn = f:GetName()
 			if opt.orgPos == nil and not MovAny:IsContainer(f:GetName()) and string.match("BagFrame", f:GetName()) ~= nil then
 				self:StoreOrgPoints(f, opt)
 			end
-			
+
 			if UIPARENT_MANAGED_FRAME_POSITIONS[fn] then
 				f.ignoreFramePositionManager = true
 			end
-			
+
 			MovAny:UnlockPoint(f)
 			f:ClearAllPoints()
 			if f.MASetPoint then
@@ -55,17 +55,17 @@ local m = {
 			else
 				f:SetPoint(unpack(opt.pos))
 			end
-			
+
 			MovAny:LockPoint(f, opt)
-			
+
 			if f.OnMAPosition then
 				f.OnMAPosition(f)
 			end
-			
+
 			if e.onPosition then
 				e.onPosition(f)
 			end
-			
+
 			if f.attachedChildren then
 				for i, v in pairs(f.attachedChildren) do
 					if not v.ignoreFramePositionManager and v.GetName and UIPARENT_MANAGED_FRAME_POSITIONS[v:GetName()] and not v.ignoreFramePositionManager and not MovAny:IsModified(v) and v.GetName and UIPARENT_MANAGED_FRAME_POSITIONS[v:GetName()] then
@@ -74,7 +74,7 @@ local m = {
 					end
 				end
 			end
-			
+
 			if UIPanelWindows[fn] and f ~= GameMenuFrame then
 				local left = GetUIPanel("left")
 				local center = GetUIPanel("center")
@@ -88,7 +88,7 @@ local m = {
 				elseif f == center then
 					UIParent.center = nil
 				end
-				
+
 				local wasShown = f:IsShown()
 				if f ~= TaxiFrame and f ~= MerchantFrame and f ~= BankFrame and f ~= QuestFrame and f ~= ClassTrainerFrame and (not MovAny:IsProtected(f) or not InCombatLockdown()) then
 					--[[
@@ -105,7 +105,7 @@ local m = {
 						if not MovAny.rendered and wasShown then
 							ShowUIPanel(f)
 						end
-						
+
 						HideUIPanel(f)
 						--[[
 						if sfx then
@@ -122,7 +122,7 @@ local m = {
 				f:SetAttribute("UIPanelLayout-enabled", false)
 				tinsert(UISpecialFrames, f:GetName())
 
-				if wasShown and f ~= TaxiFrame and f ~= MerchantFrame and f ~= BankFrame and f ~= QuestFrame and f ~= ClassTrainerFrame and (not MovAny:IsProtected(f) or not InCombatLockdown()) then
+				if wasShown and f ~= TaxiFrame and f ~= MerchantFrame and f ~= BankFrame and f ~= QuestFrame and f ~= ClassTrainerFrame and f ~= InspectFrame and (not MovAny:IsProtected(f) or not InCombatLockdown()) then
 					f:Show()
 				end
 			end
@@ -134,13 +134,13 @@ local m = {
 			return
 		end
 		MovAny:UnlockPoint(f)
-		
+
 		local umfp = nil
 		if f.ignoreFramePositionManager then
 			umfp = true
 			f.ignoreFramePositionManager = nil
 		end
-		
+
 		if opt.orgPos then
 			self:RestoreOrgPoints(f, opt, readOnly)
 		else

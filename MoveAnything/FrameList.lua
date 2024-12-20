@@ -50,7 +50,9 @@ local m = {
 		cats = nil
 		local c, e
 		c = API:GetCategory("Achievements & Quests")
-		API:AddElement({name = "AchievementFrame", displayName = "Achievements"}, c)
+		API:AddElement({name = "AchievementFrame", displayName = "Achievements", runOnce = function()
+			AchievementFrame_LoadUI()
+		end}, c)
 		API:AddElement({name = "AchievementAlertFrame1", displayName = "Achievement Alert 1", runOnce = AchievementFrame_LoadUI, create = "AchievementAlertFrameTemplate"}, c)
 		API:AddElement({name = "AchievementAlertFrame2", displayName = "Achievement Alert 2", runOnce = AchievementFrame_LoadUI, create = "AchievementAlertFrameTemplate"}, c)
 --		local gcaf = API:AddElement({name = "GuildChallengeAlertFrame", displayName = "Guild Challenge Achievement Alert"}, c)
@@ -75,20 +77,20 @@ local m = {
 			end)
 		end}, c)
 --]]
-		API:AddElement({name = "QuestTimerFrame", displayName = "Quest Timer"}, c)
-		
+--		API:AddElement({name = "QuestTimerFrame", displayName = "Quest Timer"}, c)
+
 		c = API:GetCategory("Arena")
 		API:AddElement({name = "ArenaEnemyFrame1", displayName = "Arena Enemy 1", create = "ArenaEnemyFrameTemplate", runOnce = Arena_LoadUI}, c)
 		API:AddElement({name = "ArenaEnemyFrame2", displayName = "Arena Enemy 2", create = "ArenaEnemyFrameTemplate", runOnce = Arena_LoadUI}, c)
 		API:AddElement({name = "ArenaEnemyFrame3", displayName = "Arena Enemy 3", create = "ArenaEnemyFrameTemplate", runOnce = Arena_LoadUI}, c)
 		API:AddElement({name = "ArenaEnemyFrame4", displayName = "Arena Enemy 4", create = "ArenaEnemyFrameTemplate", runOnce = Arena_LoadUI}, c)
 		API:AddElement({name = "ArenaEnemyFrame5", displayName = "Arena Enemy 5", create = "ArenaEnemyFrameTemplate", runOnce = Arena_LoadUI}, c)
-		local ttt1 = API:AddElement({name = "TimerTrackerTimer1", displayName = NEW_ICON .. "Timer tracker"}, c)
+		local ttt1 = API:AddElement({name = "TimerTrackerTimer1", displayName = NEW_ICON .. "Timer tracker", onlyOnceCreated = 1}, c)
 		API:AddElement({name = "PVPTeamDetails", displayName = "Arena Team Details"}, c)
 		API:AddElement({name = "ArenaFrame", displayName = "Arena Queue List"}, c)
 		API:AddElement({name = "ArenaRegistrarFrame", displayName = "Arena Registrar"}, c)
 		API:AddElement({name = "PVPBannerFrame", displayName = "Arena Banner"}, c)
-		
+
 		c = API:GetCategory("Battlegrounds & PvP")
 		local pvpf = API:AddElement({name = "PVPFrame", displayName = "PVP Window"}, c)
 		API:AddElement({name = "BattlefieldMinimap", displayName = "Battlefield Mini Map"}, c)
@@ -121,7 +123,7 @@ local m = {
 		API:AddElement({name = "CharacterBag2Slot", displayName = "Bag Button 3"}, c)
 		API:AddElement({name = "CharacterBag3Slot", displayName = "Bag Button 4"}, c)
 		API:AddElement({name = "KeyRingButton", displayName = "Key Ring Button"}, c)
-		
+
 		c = API:GetCategory("Blizzard Action Bars")
 		API:AddElement({name = "BasicActionButtonsMover", displayName = "Action Bar", linkedScaling = {"ActionBarDownButton", "ActionBarUpButton"}}, c)
 		API:AddElement({name = "BasicActionButtonsVerticalMover", displayName = "Action Bar - Vertical"}, c)
@@ -236,7 +238,7 @@ local m = {
 		API:AddElement({name = "MultiCastActionBarFrame", displayName = NEW_ICON .. "Shaman Totem bar"}, c)
 		API:AddElement({name = "TotemFrame", displayName = "Shaman Totem Timers"}, c)
 --		API:AddElement({name = "ShardBarFrame", displayName = "Warlock Soul Shards"}, c)
-		
+
 		c = API:GetCategory("Dungeons & Raids")
 		API:AddElement({name = "LFDParentFrame", displayName = "Dungeon Finder"}, c)
 		API:AddElement({name = "EncounterJournal", displayName = NEW_ICON .. "Dungeon Journal"}, c)
@@ -268,14 +270,14 @@ local m = {
 		API:AddElement({name = "Boss3TargetFrame", displayName = "Raid Boss Health Bar 3"}, c)
 		API:AddElement({name = "Boss4TargetFrame", displayName = "Raid Boss Health Bar 4"}, c)
 		API:AddElement({name = "LFRParentFrame", displayName = "Raid Browser"}, c)
-		API:AddElement({name = "CompactRaidGroup1", displayName = NEW_ICON .. "Raid Group 1"}, c)
-		API:AddElement({name = "CompactRaidGroup2", displayName = NEW_ICON .. "Raid Group 2"}, c)
-		API:AddElement({name = "CompactRaidGroup3", displayName = NEW_ICON .. "Raid Group 3"}, c)
-		API:AddElement({name = "CompactRaidGroup4", displayName = NEW_ICON .. "Raid Group 4"}, c)
-		API:AddElement({name = "CompactRaidGroup5", displayName = NEW_ICON .. "Raid Group 5"}, c)
-		API:AddElement({name = "CompactRaidGroup6", displayName = NEW_ICON .. "Raid Group 6"}, c)
-		API:AddElement({name = "CompactRaidGroup7", displayName = NEW_ICON .. "Raid Group 7"}, c)
-		API:AddElement({name = "CompactRaidGroup8", displayName = NEW_ICON .. "Raid Group 8"}, c)
+		API:AddElement({name = "CompactRaidGroup1", displayName = NEW_ICON .. "Raid Group 1", onlyOnceCreated = 1}, c)
+		API:AddElement({name = "CompactRaidGroup2", displayName = NEW_ICON .. "Raid Group 2", onlyOnceCreated = 1}, c)
+		API:AddElement({name = "CompactRaidGroup3", displayName = NEW_ICON .. "Raid Group 3", onlyOnceCreated = 1}, c)
+		API:AddElement({name = "CompactRaidGroup4", displayName = NEW_ICON .. "Raid Group 4", onlyOnceCreated = 1}, c)
+		API:AddElement({name = "CompactRaidGroup5", displayName = NEW_ICON .. "Raid Group 5", onlyOnceCreated = 1}, c)
+		API:AddElement({name = "CompactRaidGroup6", displayName = NEW_ICON .. "Raid Group 6", onlyOnceCreated = 1}, c)
+		API:AddElement({name = "CompactRaidGroup7", displayName = NEW_ICON .. "Raid Group 7", onlyOnceCreated = 1}, c)
+		API:AddElement({name = "CompactRaidGroup8", displayName = NEW_ICON .. "Raid Group 8", onlyOnceCreated = 1}, c)
 		API:AddElement({name = "CompactRaidFrameManager", displayName = NEW_ICON .. "Raid Manager"}, c)
 		API:AddElement({name = "CompactRaidFrameManagerToggleButton", displayName = NEW_ICON .. "Raid Manager Toggle Button", onlyOnceCreated = 1}, c)
 		API:AddElement({name = "CompactRaidFrameBuffTooltipsMover", displayName = NEW_ICON .. "Raid Frame Buff Tooltips"}, c)
@@ -292,7 +294,7 @@ local m = {
 --		API:AddElement({name = "RaidPullout8", displayName = "Raid Group Pullout 8"}, c)
 		API:AddElement({name = "RaidWarningFrame", displayName = "Raid Warnings"}, c)
 		API:AddElement({name = "ReadyCheckFrame", displayName = "Ready Check"}, c)
-		
+
 		c = API:GetCategory("Game Menu")
 		API:AddElement({name = "GameMenuFrame", displayName = "Game Menu",
 			hideList = {
@@ -321,10 +323,12 @@ local m = {
 				end
 			end)
 		end}, c)
-		API:AddElement({name = "KeyBindingFrame", displayName = "Keybinding Options"}, c)
+		API:AddElement({name = "KeyBindingFrame", displayName = "Keybinding Options", runOnce = function()
+			KeyBindingFrame_LoadUI()
+		end}, c)
 		c = API:GetCategory("Guild")
 		API:AddElement({name = "GuildFrame", displayName = NEW_ICON .. "Guild"}, c)
-		API:AddElement({name = "GuildBankFrame", displayName = "Guild Bank"}, c)
+		API:AddElement({name = "GuildBankFrame", displayName = "Guild Bank", refuseSync = MOVANY.FRAME_ONLY_WHEN_BANK_IS_OPEN}, c)
 --		gcaf:AddCategory(c)
 		API:AddElement({name = "GuildControlPopupFrame", displayName = "Guild Control"}, c)
 		local lfgf = API:AddElement({name = "LookingForGuildFrame", displayName = NEW_ICON .. "Guild Finder"}, c)
@@ -345,7 +349,13 @@ local m = {
 		API:AddElement({name = "TaxiFrame", displayName = "Flight Paths"}, c)
 		lfgf:AddCategory(c)
 		API:AddElement({name = "GossipFrame", displayName = "Gossip"}, c)
-		API:AddElement({name = "InspectFrame", displayName = "Inspect"}, c)
+		API:AddElement({name = "InspectFrame", displayName = "Inspect", runOnce = function()
+			InspectFrame_LoadUI()
+		end, runBeforeInteract = function()
+			if InspectFrame and not InspectFrame:IsShown() then
+				InspectFrame_Show("player")
+			end
+		end}, c)
 		API:AddElement({name = "LFRParentFrame", displayName = "Looking For Raid"}, c)
 		API:AddElement({name = "MacroFrame", displayName = "Macros"}, c)
 		API:AddElement({name = "MailFrame", displayName = "Mailbox"}, c)
@@ -376,8 +386,8 @@ local m = {
 		API:AddElement({name = "MinimapBorder", displayName = "Minimap Border Texture"}, c)
 		API:AddElement({name = "MinimapZoneTextButton", displayName = "Minimap Zone Text"}, c)
 		API:AddElement({name = "MinimapBorderTop", displayName = "Minimap Top Border", noScale = 1}, c)
-		API:AddElement({name = "MinimapBackdrop", displayName = "Minimap Round Border", noAlpha = 1, noMove = 1, noScale = 1, hideList = {{"MinimapBackdrop", "ARTWORK"}}}, c)
-		API:AddElement({name = "MinimapNorthTag", displayName = "Minimap North Indicator", noAlpha = 1, noMove = 1, noScale = 1}, c)
+--		API:AddElement({name = "MinimapBackdrop", displayName = "Minimap Round Border", noAlpha = 1, noMove = 1, noScale = 1, hideList = {{"MinimapBackdrop", "ARTWORK"}}}, c)
+--		API:AddElement({name = "MinimapNorthTag", displayName = "Minimap North Indicator", noAlpha = 1, noMove = 1, noScale = 1}, c)
 		API:AddElement({name = "GameTimeFrame", displayName = "Minimap Calendar Button"}, c)
 		API:AddElement({name = "TimeManagerClockButton", displayName = "Minimap Clock Button"}, c)
 		API:AddElement({name = "MiniMapInstanceDifficulty", displayName = "Minimap Dungeon Difficulty"}, c)
@@ -388,7 +398,7 @@ local m = {
 		API:AddElement({name = "MinimapZoomIn", displayName = "Minimap Zoom In Button"}, c)
 		API:AddElement({name = "MinimapZoomOut", displayName = "Minimap Zoom Out Button"}, c)
 		API:AddElement({name = "MiniMapWorldMapButton", displayName = "Minimap World Map Button"}, c)
-		
+
 		c = API:GetCategory("Miscellaneous")
 		API:AddElement({name = "TimeManagerFrame", displayName = "Alarm Clock"}, c)
 		API:AddElement({name = "BlackMarketFrame", displayName = NEW_ICON .. "Black Market Auction", runOnce = BlackMarketFrame_Show}, c)
@@ -408,7 +418,7 @@ local m = {
 --		API:AddElement({name = "SideDressUpFrame", displayName = "Auction House Dressing Room"}, c)
 		API:AddElement({name = "AuctionHouseFrame", displayName = "Auction House"}, c)
 --		API:AddElement({name = "AuctionProgressFrame", displayName = "Auction Creation Progress"}, c)
-		API:AddElement({name = "BarberShopFrame", displayName = "Barber Shop"}, c)
+--		API:AddElement({name = "BarberShopFrame", displayName = "Barber Shop"}, c)
 --		API:AddElement({name = "BNToastFrame", displayName = "Battle.Net Popup Message"}, c)
 		API:AddElement({name = "MirrorTimer1", displayName = "BreathFatigue Bar"}, c)
 		API:AddElement({name = "CalendarFrame", displayName = "Calendar"}, c)
@@ -438,7 +448,6 @@ local m = {
 		API:AddElement({name = "TicketStatusFrame", displayName = "Ticket Status"}, c)
 		API:AddElement({name = "TooltipMover", displayName = "Tooltip"}, c)
 		API:AddElement({name = "BagItemTooltipMover", displayName = "Tooltip - Bag Item"}, c)
-		API:AddElement({name = "WorldStateAlwaysUpFrame", displayName = "Top Center Status Display", noUnanchorRelatives = 1, noScale = 1}, c)
 		wsauf:AddCategory(c)
 --		API:AddElement({name = "TutorialFrame", displayName = "Tutorials"}, c)
 --		API:AddElement({name = "TutorialFrameAlertButton", displayName = "Tutorials Alert Button"}, c)
@@ -504,7 +513,7 @@ local m = {
 		API:AddElement({name = "TargetFrameToT", displayName = "Target of Target"}, c)
 		API:AddElement({name = "TargetFrameToTDebuffsMover", displayName = "Target of Target Debuffs"}, c)
 		API:AddElement({name = "TargetFrameNumericalThreat", displayName = NEW_ICON .. "Target Threat Indicator"}, c)
-		API:AddElement({name = "RatedBattlegroundRankTargetFrame", displayName = NEW_ICON .. "Target Player Rank"}, c)
+--		API:AddElement({name = "RatedBattlegroundRankTargetFrame", displayName = NEW_ICON .. "Target Player Rank"}, c)
 
 		c = API:GetCategory("Vehicle")
 		API:AddElement({name = "VehicleMenuBar", displayName = "Vehicle Bar",
