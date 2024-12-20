@@ -5313,12 +5313,6 @@ function MovAny_OnEvent(self, event, arg1)
 			if MovAny.Load ~= nil then
 				MovAny:Load()
 				MovAny.Load = nil
-				if MovAny:IsModified(QuestLogFrame) then
-					MovAny:ResetFrame(QuestLogFrame)
-				end
-				if MovAny:IsModified(QuestLogDetailFrame) then
-					MovAny:ResetFrame(QuestLogDetailFrame)
-				end
 			end
 		elseif arg1 == "Blizzard_TalentUI" and MovAny.hBlizzard_TalentUI then
 			MovAny:hBlizzard_TalentUI()
