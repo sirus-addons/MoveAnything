@@ -351,10 +351,6 @@ local m = {
 		API:AddElement({name = "GossipFrame", displayName = "Gossip"}, c)
 		API:AddElement({name = "InspectFrame", displayName = "Inspect", runOnce = function()
 			InspectFrame_LoadUI()
-		end, runBeforeInteract = function()
-			if InspectFrame and not InspectFrame:IsShown() then
-				InspectFrame_Show("player")
-			end
 		end}, c)
 		API:AddElement({name = "LFRParentFrame", displayName = "Looking For Raid"}, c)
 		API:AddElement({name = "MacroFrame", displayName = "Macros"}, c)
