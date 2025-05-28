@@ -3,9 +3,11 @@
 ## Version: 18.0.8
 ## Author: Wagthaa
 ## Notes: |@Version: 13@|Move, scale, hide and adjust transparency of just about any screen element in the game.
+## Notes-deDE: |@Version: 13@|Bewege, skaliere, verstecke und passe die Transparenz nahezu aller Bildschirmelemente im Spiel an.
 ## SavedVariables: MADB
 
 Localizations\Localization.en.lua
+Localizations\Localization.de.lua
 Localizations\Localization.ru.lua
 
 MoveAnything.lua
