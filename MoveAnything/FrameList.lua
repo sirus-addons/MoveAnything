@@ -464,6 +464,7 @@ local m = {
 		c = API:GetCategory("Unit: Focus")
 		API:AddElement({name = "FocusFrame", displayName = "Focus"}, c)
 		API:AddElement({name = "FocusFrameTextureFramePVPIcon", displayName = NEW_ICON .. "Focus PVP Icon"}, c)
+		API:AddElement({name = "FocusFrameTextureFrameRenegadeIcon", displayName = NEW_ICON .. "Focus Renegade Icon"}, c)
 		API:AddElement({name = "FocusBuffsMover", displayName = "Focus Buffs"}, c)
 		API:AddElement({name = "FocusDebuffsMover", displayName = "Focus Debuffs"}, c)
 		API:AddElement({name = "FocusFrameSpellBar", displayName = "Focus Casting Bar", noAlpha = 1}, c)
@@ -490,6 +491,7 @@ local m = {
 
 		c = API:GetCategory("Unit: Player")
 		API:AddElement({name = "PlayerFrame", displayName = "Player", linkedScaling = {"ComboFrame"}}, c)
+		API:AddElement({name = "PVPIconFrame", displayName = NEW_ICON .. "Player PVP Icon"}, c)
 		API:AddElement({name = "PlayerBuffsMover", displayName = "Player Buffs"}, c)
 		API:AddElement({name = "ConsolidatedBuffsTooltip", displayName = "Player Buffs - Consolidated Buffs Tooltip"}, c)
 		API:AddElement({name = "PlayerDebuffsMover", displayName = "Player Debuffs"}, c)
@@ -502,6 +504,8 @@ local m = {
 
 		c = API:GetCategory("Unit: Target")
 		API:AddElement({name = "TargetFrame", displayName = "Target"}, c)
+		API:AddElement({name = "TargetFrameTextureFramePVPIcon", displayName = NEW_ICON .. "Target PVP Icon"}, c)
+		API:AddElement({name = "TargetFrameTextureFrameRenegadeIcon", displayName = NEW_ICON .. "Target Renegade Icon"}, c)
 		API:AddElement({name = "TargetBuffsMover", displayName = "Target Buffs"}, c)
 		API:AddElement({name = "TargetDebuffsMover", displayName = "Target Debuffs"}, c)
 		API:AddElement({name = "ComboFrame", displayName = "Target Combo Points Display"}, c)
