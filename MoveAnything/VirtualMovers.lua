@@ -151,6 +151,83 @@ MovAny.lVirtualMovers = {
 			end
 		end
 	},
+	ObjectiveTrackerFrameMover = {
+		w = 235,
+		h = 700,
+		point = {"TOPRIGHT", "MinimapCluster", "BOTTOMRIGHT", -10, 0},
+		OnMAHook = function(self)
+			local b = ObjectiveTrackerFrame or QuestWatchFrame
+			MovAny:UnlockPoint(b)
+			b:ClearAllPoints()
+			b:SetPoint("TOPRIGHT", self, "TOPRIGHT")
+			MovAny:LockPoint(b)
+			--b.ignoreFramePositionManager = true
+			b:SetMovable(true)
+			b:SetHeight(self:GetHeight())
+			b:SetUserPlaced(true)
+			--self.sbf = b
+		end,
+		OnMAPostReset = function(self)
+			local b = ObjectiveTrackerFrame or QuestWatchFrame
+			MovAny:UnlockPoint(b)
+			--b:ClearAllPoints()
+			--b:SetPoint("TOPRIGHT", "MinimapCluster", "BOTTOMRIGHT", -10, 0)
+			--b:SetHeight(b:GetTop() - 85)
+			UIParent_ManageFramePositions()
+		end,
+		OnMAScale = function(self)
+			local b = ObjectiveTrackerFrame or QuestWatchFrame
+			local scaleS = self:GetScale()
+			local scaleH = self:GetHeight()
+			local scaleW = self:GetWidth()
+			b:SetHeight(scaleH)
+			b:SetWidth(scaleW)
+		end,
+		OnMAHide = function(self, hidden)
+			if hidden then
+				MovAny:LockVisibility(WOW_PROJECT_ID ~= WOW_PROJECT_CLASSIC and _G["ObjectiveTrackerFrame"] or _G["QuestWatchFrame"])
+			else
+				MovAny:UnlockVisibility(WOW_PROJECT_ID ~= WOW_PROJECT_CLASSIC and _G["ObjectiveTrackerFrame"] or _G["QuestWatchFrame"])
+			end
+		end
+	},
+	ObjectiveTrackerFrameScaleMover = {
+		w = 235,
+		h = 700,
+		point = {"TOPRIGHT", "MinimapCluster", "BOTTOMRIGHT", -10, 0},
+		OnMAHook = function(self)
+			local b = ObjectiveTrackerFrame or QuestWatchFrame
+			MovAny:UnlockPoint(b)
+			b:ClearAllPoints()
+			b:SetPoint("TOPRIGHT", self, "TOPRIGHT")
+			MovAny:LockPoint(b)
+			--b.ignoreFramePositionManager = true
+			b:SetMovable(true)
+			b:SetHeight(self:GetHeight())
+			b:SetUserPlaced(true)
+			--self.sbf = b
+		end,
+		OnMAPostReset = function(self)
+			local b = ObjectiveTrackerFrame or QuestWatchFrame
+			MovAny:UnlockPoint(b)
+			b:ClearAllPoints()
+			--b:SetPoint("TOPRIGHT", "MinimapCluster", "BOTTOMRIGHT", -10, 0)
+			--b:SetHeight(b:GetTop() - 85)
+			UIParent_ManageFramePositions()
+		end,
+		OnMAScale = function(self)
+			local b = ObjectiveTrackerFrame or QuestWatchFrame
+			local scaleS = self:GetScale()
+			b:SetScale(scaleS)
+		end,
+		OnMAHide = function(self, hidden)
+			if hidden then
+				MovAny:LockVisibility(_G["ObjectiveTrackerFrame"] or _G["QuestWatchFrame"])
+			else
+				MovAny:UnlockVisibility(_G["ObjectiveTrackerFrame"] or _G["QuestWatchFrame"])
+			end
+		end
+	},
 	BagItemTooltipMover = {
 		frameStrata = "TOOLTIP",
 		w = 150,
@@ -1006,6 +1083,8 @@ MovAny.lVirtualMovers = {
 			end
 			child.MAParent = nil
 		end,
+		OnMAScale = ScaleChildren,
+		OnMAPreReset = ResetChildren
 	},
 	MultiBarLeftHorizontalMover = {
 		w = 498,
@@ -1033,6 +1112,8 @@ MovAny.lVirtualMovers = {
 			end
 			child.MAParent = nil
 		end,
+		OnMAScale = ScaleChildren,
+		OnMAPreReset = ResetChildren
 	},
 	PartyMember1DebuffsMover = {
 		w = 66,
