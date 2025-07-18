@@ -96,8 +96,12 @@ MADB = {
 	profiles = {},
 }
 
+local HiddenFrame = CreateFrame("Frame")
+HiddenFrame:Hide()
+
 local MovAny = {
 	fVoid = function() end,
+	HiddenFrame = HiddenFrame,
 	guiLines = -1,
 	resetConfirm = "",
 	bagFrames = {},
@@ -1105,12 +1109,25 @@ function MovAny:LockVisibility(f, dontHide)
 	end
 	f.MAHidden = true
 
+	f.MAWasShown = f:IsShown()
+
+	if not dontHide and MovAny:IsProtected(f) then
+		if not f.MAParentOriginal then
+			f.MAParentOriginal = f:GetParent()
+		end
+		f.SetParent = nil
+		f:SetParent(MovAny.HiddenFrame)
+		f.SetParent = function(this, parent)
+			f.MAParentNew = parent
+		end
+		return
+	end
+	
 	if not f.MAShowHook then
 		hooksecurefunc(f, "Show", MovAny.hShow)
 		f.MAShowHook = true
 	end
 
-	f.MAWasShown = f:IsShown()
 	if not dontHide and f.MAWasShown then
 		f:Hide()
 	end
@@ -1128,6 +1145,13 @@ function MovAny:UnlockVisibility(f)
 	if f.MAWasShown then
 		f.MAWasShown = nil
 		f:Show()
+	end
+
+	if f.MAParentOriginal then
+		f.SetParent = nil
+		f:SetParent(f.MAParentNew or f.MAParentOriginal)
+		f.MAParentOriginal = nil
+		f.MAParentNew = nil
 	end
 end
 
