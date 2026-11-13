@@ -472,8 +472,8 @@ if CompactRaidFrameManager_Expand then
 		if MovAny:IsModified(self) then
 			MovAny:UnlockPoint(self)
 			local point, relativeTo, relativePoint, xOfs, yOfs = self:GetPoint(1)
-			self:ClearAllPoints()
-			self:SetPoint("TOPLEFT", UIParent, "TOPLEFT", xOfs + 175, yOfs)
+			MovAny:ClearAllPoints(self)
+			MovAny:SetPoint(self, "TOPLEFT", UIParent, "TOPLEFT", xOfs + 175, yOfs)
 			MovAny:LockPoint(self)
 		end
 	end)
@@ -487,8 +487,8 @@ if CompactRaidFrameManager_Collapse then
 		if MovAny:IsModified(self) then
 			MovAny:UnlockPoint(self)
 			local point, relativeTo, relativePoint, xOfs, yOfs = self:GetPoint(1)
-			self:ClearAllPoints()
-			self:SetPoint("TOPLEFT", UIParent, "TOPLEFT", xOfs - 175, yOfs)
+			MovAny:ClearAllPoints(self)
+			MovAny:SetPoint(self, "TOPLEFT", UIParent, "TOPLEFT", xOfs - 175, yOfs)
 			MovAny:LockPoint(self)
 		end
 	end)
@@ -707,6 +707,11 @@ function MovAny:Boot()
 		self.oAchievementAlertFrame_GetAlertFrame = AchievementAlertFrame_GetAlertFrame
 		AchievementAlertFrame_GetAlertFrame = self.hAchievementAlertFrame_GetAlertFrame
 	end
+	if EditModeManagerFrame then
+		EditModeManagerFrame:HookScript("OnHide", function()
+			MovAny:SyncAllFrames()
+		end)
+	end
 
 	self.inited = true
 
@@ -880,6 +885,9 @@ function MovAny:ForcedDetachFromParent(fn, opt)
 	if UIPanelWindows[fn] then
 		return "UIParent"
 	end
+	if _G[fn] and _G[fn].isManagedFrame then
+		return "UIParent"
+	end
 	opt = opt or self.userData[fn]
 	if not opt or opt.UIPanelWindows then
 		return "UIParent"
@@ -892,6 +900,19 @@ function MovAny:ErrorNotInCombat(f, quiet)
 			maPrint(string.format(MOVANY.FRAME_PROTECTED_DURING_COMBAT, f:GetName()))
 		end
 		return true
+	end
+end
+
+function MovAny:IsTakenFrame(f)
+	if not EditModeManagerFrame or not Bartender4 or not f.GetParent then
+		return
+	end
+	local p = f:GetParent()
+	while p and p ~= UIParent do
+		if p == Bartender4.UIHider or string.match(p:GetName() or "", "^BT4Bar") then
+			return true
+		end
+		p = p:GetParent()
 	end
 end
 
@@ -909,6 +930,13 @@ function MovAny:IsValidObject(f, silent)
 		return
 	end
 	if self.lDisallowedFrames[f:GetName()] then
+		if not silent then
+			maPrint(string.format(MOVANY.UNSUPPORTED_FRAME, f:GetName()))
+		end
+		return
+	end
+
+	if self:IsTakenFrame(f) then
 		if not silent then
 			maPrint(string.format(MOVANY.UNSUPPORTED_FRAME, f:GetName()))
 		end
@@ -956,7 +984,7 @@ function MovAny:SyncFrames(dontReset)
 		i = i + 1
 		break
 	end
-	if i == 0 then
+	if i == 0 and not next(self.pendingActions) then
 		return
 	end
 	self.syncingFrames = true
@@ -1082,6 +1110,14 @@ function MovAny:GetUserData(fn, noSymLink, create)
 	end
 end
 
+function MovAny:HideBase(f)
+	if f.HideBase then
+		f:HideBase()
+	else
+		f:Hide()
+	end
+end
+
 function MovAny.hShow(f, ...)
 	if not f then
 		return
@@ -1094,7 +1130,7 @@ function MovAny.hShow(f, ...)
 			end
 		else
 			f.MAHidden = nil
-			f:Hide()
+			MovAny:HideBase(f)
 			f.MAHidden = true
 		end
 	end
@@ -1129,7 +1165,7 @@ function MovAny:LockVisibility(f, dontHide)
 	end
 
 	if not dontHide and f.MAWasShown then
-		f:Hide()
+		self:HideBase(f)
 	end
 end
 
@@ -1144,7 +1180,11 @@ function MovAny:UnlockVisibility(f)
 
 	if f.MAWasShown then
 		f.MAWasShown = nil
-		f:Show()
+		if f.ShowBase then
+			f:ShowBase()
+		else
+			f:Show()
+		end
 	end
 
 	if f.MAParentOriginal then
@@ -1155,11 +1195,74 @@ function MovAny:UnlockVisibility(f)
 	end
 end
 
+function MovAny:IsEditModeFrame(f)
+	return f.system ~= nil and f.SetPointBase ~= nil
+end
+
+function MovAny:SetPoint(f, ...)
+	if self:IsEditModeFrame(f) then
+		f:SetPointBase(...)
+	elseif f.MASetPoint then
+		f:MASetPoint(...)
+	else
+		f:SetPoint(...)
+	end
+end
+
+function MovAny:ClearAllPoints(f)
+	if self:IsEditModeFrame(f) then
+		f:ClearAllPointsBase()
+	else
+		f:ClearAllPoints()
+	end
+end
+
+function MovAny:SetScale(f, scale)
+	if self:IsEditModeFrame(f) then
+		f:SetScaleBase(scale)
+	else
+		f:SetScale(scale)
+	end
+end
+
+function MovAny:ApplyEditModeAnchor(f)
+	local info = f.systemInfo
+	if not info then
+		return
+	end
+	if f.isManagedFrame or (f.ApplySystemAnchor ~= EditModeSystemMixin.ApplySystemAnchor and f ~= PlayerFrame) then
+		f:ApplySystemAnchor()
+		return
+	end
+	local scale = f:GetScale()
+	f:ClearAllPointsBase()
+	for _, anchor in ipairs({info.anchorInfo, info.anchorInfo2}) do
+		f:SetPointBase(anchor.point, anchor.relativeTo, anchor.relativePoint, anchor.offsetX / scale, anchor.offsetY / scale)
+	end
+end
+
+function MovAny:UnmanageFrame(f)
+	if not f.isManagedFrame or not f.layoutParent or InCombatLockdown() then
+		return
+	end
+	local left, bottom, scale = f:GetLeft(), f:GetBottom(), f:GetEffectiveScale()
+	f.ignoreFramePositionManager = true
+	f.layoutParent:RemoveManagedFrame(f)
+	if f:GetParent() ~= UIParent then
+		f:SetParent(UIParent)
+	end
+	if left then
+		scale = scale / f:GetEffectiveScale()
+		self:ClearAllPoints(f)
+		self:SetPoint(f, "BOTTOMLEFT", UIParent, "BOTTOMLEFT", left * scale, bottom * scale)
+	end
+end
+
 function MovAny.hSetPoint(f, ...)
 	if not f then
 		return
 	end
-	if f.MAPoint then
+	if f.MAPoint and not (f.system and f.isSelected) then
 		local fn = f:GetName()
 
 		if fn and string.match(fn, "^ContainerFrame[1-9][0-9]*$") then
@@ -1173,23 +1276,24 @@ function MovAny.hSetPoint(f, ...)
 		if InCombatLockdown() and MovAny:IsProtected(f) then
 			local closure = function(f)
 				return function()
+					if InCombatLockdown() and MovAny:IsProtected(f) then
+						return true
+					end
 					local p = f.MAPoint
-					f.MAPoint = nil
-					f:ClearAllPoints()
 					if p then
-						f:ClearAllPoints()
-						f:SetPoint(unpack(p))
+						f.MAPoint = nil
+						MovAny:ClearAllPoints(f)
+						MovAny:SetPoint(f, unpack(p))
 						f.MAPoint = p
 					end
-					p = nil
 				end
 			end
 			MovAny.pendingActions[fn..":SetPoint"] = closure(f)
 		else
 			local p = f.MAPoint
 			f.MAPoint = nil
-			f:ClearAllPoints()
-			f:SetPoint(unpack(p))
+			MovAny:ClearAllPoints(f)
+			MovAny:SetPoint(f, unpack(p))
 			f.MAPoint = p
 			p = nil
 		end
@@ -1327,11 +1431,16 @@ function MovAny:UnlockScale( f )
 	f.MAScaleLocked = nil
 end]]
 
+function MovAny.hEditModeSetScale(f, scale)
+	f.MAEditModeScale = scale
+	MovAny.hSetScale(f)
+end
+
 function MovAny.hSetScale(f)
 	if not f then
 		return
 	end
-	if f.MAScaled then
+	if f.MAScaled and not (f.system and f.isSelected) then
 		local fn = f:GetName()
 
 		if string.match(fn, "^ContainerFrame[1-9][0-9]*$") then
@@ -1393,7 +1502,7 @@ function MovAny:Rescale(f, scale)
 		return
 	end
 	MovAny:UnlockScale(f)
-	f:SetScale(scale)
+	MovAny:SetScale(f, scale)
 	MovAny:LockScale(f)
 end
 
@@ -1438,6 +1547,10 @@ function MovAny:HookFrame(e, f, dontUnanchor, runBeforeInteract)
 		return
 	end
 
+	if e and EditModeManagerFrame and (f == MinimapCluster or EditModeUtil:IsRightAnchoredActionBar(f) or EditModeUtil:IsBottomAnchoredActionBar(f)) then
+		e.noMove = 1
+	end
+
 	if not runBeforeInteract and e and e.runBeforeInteract and e.runBeforeInteract() then
 		return
 	end
@@ -1451,6 +1564,10 @@ function MovAny:HookFrame(e, f, dontUnanchor, runBeforeInteract)
 		return
 	end
 
+	if self:IsEditModeFrame(f) and not f.MAEditModeScale then
+		f.MAEditModeScale = f:GetScale()
+		hooksecurefunc(f, "SetScale", MovAny.hEditModeSetScale)
+	end
 
 	if f.MAOrgScale then
 		self:UnlockScale(f)
@@ -1466,7 +1583,7 @@ function MovAny:HookFrame(e, f, dontUnanchor, runBeforeInteract)
 		f.orgScale = f:GetScale()
 		f.scale = f:GetScale()
 	end
-	if f.SetMovable and e and not e.noMove then
+	if f.SetMovable and e and not e.noMove and not self:IsEditModeFrame(f) then
 		if f:IsUserPlaced() then
 			f.MAWasUserPlaced = true
 		end
@@ -2156,7 +2273,7 @@ function MovAny:AttachMoverToFrame(mover, f)
 	local x, y = 0, 0
 	if f:GetLeft() == nil and not f:IsShown() then
 		f:Show()
-		f:Hide()
+		self:HideBase(f)
 	end
 
 	mover.attaching = true
@@ -2166,6 +2283,10 @@ function MovAny:AttachMoverToFrame(mover, f)
 		mover:SetClampedToScreen(f:IsClampedToScreen())
 	end
 	opt.disabled = nil
+
+	if not e.noMove then
+		self:UnmanageFrame(f)
+	end
 
 	mover:ClearAllPoints()
 	mover:SetPoint("CENTER", f, "CENTER")
@@ -2190,12 +2311,8 @@ function MovAny:AttachMoverToFrame(mover, f)
 			mover.MAStartScale = f:GetScale()
 		end
 
-		f:ClearAllPoints()
-		if f.MASetPoint then
-			f:MASetPoint("BOTTOMLEFT", mover, "BOTTOMLEFT", 0, 0)
-		else
-			f:SetPoint("BOTTOMLEFT", mover, "BOTTOMLEFT", 0, 0)
-		end
+		self:ClearAllPoints(f)
+		self:SetPoint(f, "BOTTOMLEFT", mover, "BOTTOMLEFT", 0, 0)
 
 		f.orgX = x
 		f.orgY = y
@@ -2423,7 +2540,7 @@ function MovAny:HideFrame(f, readOnly)
 		fn = f:GetName()
 	end
 	API:AddElementIfNew(fn)
-	if fn == "CompactRaidFrameManager" then
+	if fn == "CompactRaidFrameManager" and not EditModeManagerFrame then
 		f:UnregisterAllEvents()
 		CompactRaidFrameContainer:SetParent(UIParent)
 	elseif fn == "Boss1TargetFrame" or fn == "Boss2TargetFrame" or fn == "Boss3TargetFrame" or fn == "Boss4TargetFrame" then
@@ -2481,7 +2598,7 @@ function MovAny:HideFrame(f, readOnly)
 		for hIndex, hideEntry in pairs(e.hideList) do
 			local val = _G[hideEntry[1]]
 			local hideType
-			for i = 2, table.getn(hideEntry) do
+			for i = 2, val and table.getn(hideEntry) or 0 do
 				hideType = hideEntry[ i ]
 				if type(hideType) == "function" then
 					hideType(nil)
@@ -2533,7 +2650,7 @@ function MovAny:ShowFrame(f, readOnly, dontHook)
 		fn = f:GetName()
 	end
 	API:AddElementIfNew(fn)
-	if fn == "CompactRaidFrameManager" then
+	if fn == "CompactRaidFrameManager" and not EditModeManagerFrame then
 		f:RegisterEvent("DISPLAY_SIZE_CHANGED")
 		f:RegisterEvent("UI_SCALE_CHANGED")
 		f:RegisterEvent("PARTY_MEMBERS_CHANGED")
@@ -2571,7 +2688,7 @@ function MovAny:ShowFrame(f, readOnly, dontHook)
 	if e and e.hideList then
 		for hIndex, hideEntry in pairs(e.hideList) do
 			local val = _G[hideEntry[1]]
-			for i = 2, table.getn(hideEntry) do
+			for i = 2, val and table.getn(hideEntry) or 0 do
 				local hideType = hideEntry[i]
 				if type(hideType) == "function" then
 					hideType(true)
@@ -3941,7 +4058,7 @@ function MovAny:UnanchorRelatives(e, f, opt)
 	if f.GetName and f:GetName() ~= nil and e.noUnanchorRelatives then
 		return
 	end
-	if not f.GetParent then
+	if not f.GetParent or self:IsEditModeFrame(f) then
 		return
 	end
 	local p = f:GetParent()
@@ -3997,7 +4114,7 @@ function MovAny:UnanchorRelatives(e, f, opt)
 		local unanchored = {}
 		local x, y, i
 		for i, v in pairs(relatives) do
-			if v:GetName() ~= nil and not self:IsContainer(v:GetName()) and not string.match(v:GetName(), "BagFrame[1-9][0-9]*") and not self.NoUnanchoring[v:GetName()] and not v.MAPoint then
+			if v:GetName() ~= nil and not self:IsContainer(v:GetName()) and not string.match(v:GetName(), "BagFrame[1-9][0-9]*") and not self.NoUnanchoring[v:GetName()] and not v.MAPoint and not self:IsEditModeFrame(v) then
 				-- alternatively use not self:GetFrameOptions(v:GetName()) instead of v.MAPoint
 				if v:GetRight() ~= nil and v:GetTop() ~= nil then
 
@@ -5348,7 +5465,7 @@ function MovAny_OnEvent(self, event, arg1)
 			f.MAParent = "RaidUnitFramesManagerMover"
 		end]]
 		local f = _G["CompactRaidFrameContainer"]
-		if f then
+		if f and MovAny.lVirtualMovers.RaidUnitFramesMover then
 			f.MAParent = "RaidUnitFramesMover"
 		end
 
