@@ -47,14 +47,11 @@ local m = {
 			if UIPARENT_MANAGED_FRAME_POSITIONS[fn] then
 				f.ignoreFramePositionManager = true
 			end
+			MovAny:UnmanageFrame(f)
 
 			MovAny:UnlockPoint(f)
-			f:ClearAllPoints()
-			if f.MASetPoint then
-				f:MASetPoint(unpack(opt.pos))
-			else
-				f:SetPoint(unpack(opt.pos))
-			end
+			MovAny:ClearAllPoints(f)
+			MovAny:SetPoint(f, unpack(opt.pos))
 
 			MovAny:LockPoint(f, opt)
 
@@ -136,14 +133,27 @@ local m = {
 		MovAny:UnlockPoint(f)
 
 		local umfp = nil
-		if f.ignoreFramePositionManager then
-			umfp = true
-			f.ignoreFramePositionManager = nil
-		end
-
-		if opt.orgPos then
+		local resync = readOnly and e.resync
+		if MovAny:IsEditModeFrame(f) then
+			if opt.pos and not resync then
+				MovAny:ApplyEditModeAnchor(f)
+			end
+			if not readOnly then
+				opt.orgPos = nil
+			end
+		elseif opt.orgPos then
+			if f.ignoreFramePositionManager then
+				umfp = not f.isManagedFrame
+				f.ignoreFramePositionManager = nil
+			end
 			self:RestoreOrgPoints(f, opt, readOnly)
+			if f.isManagedFrame and f.layoutParent and not resync then
+				f.layoutParent:AddManagedFrame(f)
+			end
 		else
+			if f.ignoreFramePositionManager then
+				f.ignoreFramePositionManager = nil
+			end
 			--f:ClearAllPoints()
 			return
 		end

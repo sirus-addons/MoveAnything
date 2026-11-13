@@ -34,6 +34,65 @@ local API
 
 local NEW_ICON = "|TInterface\\OptionsFrame\\UI-OptionsFrame-NewFeatureIcon:0:0:0:-1|t"
 
+local editModeHidden = EditModeManagerFrame and {
+	"BagButtonsMover",
+	"BagButtonsVerticalMover",
+	"BasicActionButtonsMover",
+	"BasicActionButtonsVerticalMover",
+	"MultiBarRightHorizontalMover",
+	"MultiBarLeftHorizontalMover",
+	"PetActionButtonsMover",
+	"PetActionButtonsVerticalMover",
+	"ShapeshiftButtonsMover",
+	"ShapeshiftButtonsVerticalMover",
+	"MicroButtonsMover",
+	"MicroButtonsSplitMover",
+	"MicroButtonsVerticalMover",
+	"ExtraActionBarFrameMover",
+	"PlayerBuffsMover",
+	"PlayerDebuffsMover",
+	"PartyMember1DebuffsMover",
+	"PartyMember2DebuffsMover",
+	"PartyMember3DebuffsMover",
+	"PartyMember4DebuffsMover",
+	"PetDebuffsMover",
+	"RaidUnitFramesMover",
+	"WatchFrameMover",
+	"ObjectiveTrackerFrameMover",
+	"ObjectiveTrackerFrameScaleMover",
+	"MainMenuBarPageNumber",
+	"ActionBarUpButton",
+	"ActionBarDownButton",
+	"SlidingActionBarTexture0",
+	"SlidingActionBarTexture1",
+	"MainMenuBarLeftEndCap",
+	"MainMenuBarRightEndCap",
+	"MainMenuExpBar",
+	"MainMenuBarMaxLevelBar",
+	"ReputationWatchBar",
+	"PVPIconFrame",
+	"VehicleMenuBarActionButtonFrame",
+}
+
+if editModeHidden then
+	MovAny.lForcedLock = {}
+	MovAny.lDeleteFrameNames.BuffFrame = nil
+	for i = 1, 4 do
+		MovAny.DetachFromParent["Boss"..i.."TargetFrame"] = nil
+	end
+	local renamed = {
+		BagButtonsMover = "BagsBar",
+		PlayerBuffsMover = "BuffFrame",
+		PlayerDebuffsMover = "DebuffFrame",
+		ShapeshiftButtonsMover = "ShapeshiftBarFrame",
+	}
+	for _, names in ipairs({MovAny.lTranslate, MovAny.lTranslateSec}) do
+		for k, v in pairs(names) do
+			names[k] = renamed[v] or v
+		end
+	end
+end
+
 local m = {
 	Enable = function(self)
 		API = MovAny.API
@@ -544,6 +603,43 @@ local m = {
 		API:AddElement({name = "MainMenuBarArtFrame", hidden = 1, noScale = 1}, c)
 		API:AddElement({name = "WorldMapFrame", hidden = 1, refuseSync = "Unsuppported", unsupported = 1}, c)
 		API:AddElement({name = "PaperDollFrame", hidden = 1, unsupported = 1}, c)
+
+		if editModeHidden then
+			for _, name in ipairs(editModeHidden) do
+				e = API:GetElement(name)
+				if e then
+					e.hidden = 1
+					e.refuseSync = true
+					e.runOnce = nil
+				end
+				MovAny.lVirtualMovers[name] = nil
+			end
+			for i = 1, 4 do
+				API:GetElement("Boss"..i.."TargetFrame").noMove = 1
+				API:GetElement("PartyMemberFrame"..i).noMove = 1
+			end
+			API:GetElement("MainMenuBar").hideList = nil
+			c = API:GetCategory("Achievements & Quests")
+			API:AddElement({name = "ObjectiveTrackerFrame", displayName = "Objectives Window"}, c)
+			c = API:GetCategory("Blizzard Bags")
+			API:AddElement({name = "BagsBar", displayName = "Bag Buttons"}, c)
+			c = API:GetCategory("Blizzard Action Bars")
+			API:AddElement({name = "PetActionBarFrame", displayName = "Pet Action Bar"}, c)
+			API:AddElement({name = "ShapeshiftBarFrame", displayName = "Stance / Aura / Shapeshift Buttons"}, c)
+			c = API:GetCategory("Blizzard Bottom Bar")
+			API:AddElement({name = "MainStatusTrackingBarContainer", displayName = "Status Tracking Bar 1"}, c)
+			API:AddElement({name = "SecondaryStatusTrackingBarContainer", displayName = "Status Tracking Bar 2"}, c)
+			API:AddElement({name = "MicroMenuContainer", displayName = "Micro Menu"}, c)
+			c = API:GetCategory("Dungeons & Raids")
+			API:AddElement({name = "BossTargetFrameContainer", displayName = "Raid Boss Health Bars"}, c)
+			API:AddElement({name = "CompactRaidFrameContainer", displayName = "Raid Unit Frames"}, c)
+			c = API:GetCategory("Unit: Party")
+			API:AddElement({name = "PartyFrame", displayName = "Party Members"}, c)
+			c = API:GetCategory("Unit: Player")
+			API:AddElement({name = "PlayerPVPIcon", displayName = "Player PVP Icon"}, c)
+			API:AddElement({name = "BuffFrame", displayName = "Player Buffs"}, c)
+			API:AddElement({name = "DebuffFrame", displayName = "Player Debuffs"}, c)
+		end
 
 		API.default = nil
 

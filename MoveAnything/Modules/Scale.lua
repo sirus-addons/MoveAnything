@@ -57,7 +57,7 @@ local m = {
 				opt.orgScale = f:GetScale()
 			end
 
-			f:SetScale(opt.scale)
+			MovAny:SetScale(f, opt.scale)
 			MovAny:LockScale(f)
 			
 			if f == e.f then
@@ -142,12 +142,15 @@ local m = {
 			if not opt.scale then
 				return
 			end
-			local scale = opt.orgScale or 1
+			local scale = f.MAEditModeScale or opt.orgScale or 1
 			if scale == nil then
 				return
 			end
 			if scale ~= f:GetScale() then
-				f:SetScale(scale)
+				MovAny:SetScale(f, scale)
+				if f.MAEditModeScale and not f.MAPoint and not e.noMove and not (readOnly and e.resync) then
+					MovAny:ApplyEditModeAnchor(f)
+				end
 			end
 			if f == e.f then
 				if e.hideOnScale then
