@@ -3,3 +3,11 @@
 Введите /move, чтобы отобразить главное окно, или нажмите кнопку под меню игры. Это главное окно содержит список фреймов Blizzard (любой элемент, отсутствующий в списке, может быть добавлен в категорию пользовательских фреймов с помощью /move frameName, /mafe frameName, /hide frameName или одного из сочетаний клавиш move / mafe / hide).
 
 *Спасибо игроку [Os](https://forum.sirus.su/members/17os86.175882/) за перевод описания на Русский Язык.*
+
+**Скриншоты:**
+
+![](https://raw.githubusercontent.com/sirus-addons/MoveAnything/master/.screenshots/1.webp)
+![](https://raw.githubusercontent.com/sirus-addons/MoveAnything/master/.screenshots/2.webp)
+![](https://raw.githubusercontent.com/sirus-addons/MoveAnything/master/.screenshots/3.webp)
+![](https://raw.githubusercontent.com/sirus-addons/MoveAnything/master/.screenshots/4.webp)
+![](https://raw.githubusercontent.com/sirus-addons/MoveAnything/master/.screenshots/5.webp)
