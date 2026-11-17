@@ -130,7 +130,16 @@
 		<Scripts>
 			<OnLoad>
 				self:ClearAllPoints()
-				self:SetPoint("TOP", GameMenuButtonContinue, "BOTTOM", 0, -25)
+				if EditModeManagerFrame then
+					self:SetPoint("TOP", GameMenuButtonContinue, "BOTTOM", 0, -16)
+					hooksecurefunc("GameMenuFrame_UpdateVisibleButtons", function(menu)
+						if self:IsShown() then
+							menu:SetHeight(menu:GetHeight() + self:GetHeight() + 16)
+						end
+					end)
+				else
+					self:SetPoint("TOP", GameMenuButtonContinue, "BOTTOM", 0, -25)
+				end
 			</OnLoad>
 			<OnClick>
 				if IsShiftKeyDown() and IsControlKeyDown() and IsAltKeyDown() then

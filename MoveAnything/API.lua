@@ -317,6 +317,7 @@ elemMetaTable = {__index = {
 		end
 	end,
 	Reset = function(e, f, readOnly, opt, dontResetHide)
+		e.resync = dontResetHide
 		if f and f.MAHooked and f.SetUserPlaced and f:IsUserPlaced() and (f:IsMovable() or f:IsResizable()) then
 			if f:IsUserPlaced() then
 				if f.MAWasUserPlaced then
